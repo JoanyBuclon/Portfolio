@@ -2,6 +2,7 @@
 dist/
 # generated types
 .astro/
+.claude/
 
 # dependencies
 node_modules/
@@ -24,3 +25,4 @@ pnpm-debug.log*
 .idea/
 
 concept.md
+CLAUDE.md

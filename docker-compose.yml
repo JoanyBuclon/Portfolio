@@ -1,0 +1,22 @@
+services:
+  portfolio:
+    image: ghcr.io/joanybuclon/portfolio:latest
+    container_name: portfolio-astro
+    networks:
+      - web
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.portfolioastro.rule=Host(`beta.joanybuclon.com`)"
+      - "traefik.http.routers.portfolioastro.entrypoints=websecure"
+      - "traefik.http.middlewares.portfolioastroheader.headers.framedeny=true"
+      - "traefik.http.middlewares.portfolioastroheader.headers.stsSeconds=31536000"
+      - "traefik.http.middlewares.portfolioastroheader.headers.stsIncludeSubdomains=true"
+      - "traefik.http.middlewares.portfolioastroheader.headers.contentTypeNosniff=true"
+      - "traefik.http.middlewares.portfolioastroheader.headers.referrerPolicy=strict-origin-when-cross-origin"
+      - "traefik.http.middlewares.portfolioastrocompress.compress=true"
+      - "traefik.http.routers.portfolioastro.middlewares=portfolioastroheader,portfolioastrocompress"
+    restart: unless-stopped
+
+networks:
+  web:
+    external: true
