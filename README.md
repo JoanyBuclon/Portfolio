@@ -18,5 +18,4 @@ You can then launch it using `pnpm dev`
 
 ## Deployment
 
-This bot is currently deployed via github action over at arktos-01
-Quality managed by Sonar at arktos-01
+This app is currently deployed via github action over at arktos-01
