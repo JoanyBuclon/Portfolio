@@ -1,0 +1,77 @@
+<script>
+  const anchor = document.querySelector('.anchor');
+
+  if (anchor) {
+    window.addEventListener('scroll', () => {
+      if (window.scrollY > 150) {
+        anchor.classList.remove('is-hidden');
+      } else {
+        anchor.classList.add('is-hidden');
+      }
+    });
+
+    anchor.addEventListener('click', () => {
+      document.body.scrollIntoView();
+    });
+  }
+</script>
+
+<button class='anchor is-hidden'>
+  <div class='line one'></div>
+  <div class='line two'></div>
+  <span>BACK TO TOP</span>
+</button>
+
+<style>
+  .anchor {
+    background: none;
+    border: none;
+    opacity: 1;
+    transition:
+      opacity 0.5s,
+      visibility 0.5s;
+    z-index: 99;
+    position: fixed;
+    cursor: pointer;
+    bottom: 220px;
+    right: 20px;
+    color: white;
+  }
+
+  .anchor span {
+    font-family: 'SourceCodePro';
+    writing-mode: vertical-rl;
+  }
+
+  .line {
+    margin: auto;
+    display: block;
+    background-color: white;
+    width: 2px;
+    margin-bottom: 20px;
+  }
+
+  .one {
+    height: 200px;
+  }
+
+  .two {
+    height: 120px;
+  }
+
+  .is-hidden {
+    opacity: 0;
+    visibility: hidden;
+  }
+
+  @media screen and (max-width: 600px) {
+    .anchor {
+      bottom: 90px;
+      right: 4px;
+    }
+
+    .anchor span {
+      font-size: 0.7em;
+    }
+  }
+</style>
