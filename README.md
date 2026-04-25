@@ -14,8 +14,9 @@ This project uses the following stack:
 ## Usage
 
 Clone the repository and run `pnpm i`
+
 You can then launch it using `pnpm dev`
 
 ## Deployment
 
-This app is currently deployed via github action over at arktos-01
+This app is currently deployed via github actions over at arktos-01.
