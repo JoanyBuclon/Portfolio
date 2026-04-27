@@ -1,11 +1,13 @@
 ---
 import Layout from '../layouts/Layout.astro';
+import ScrollArrowComponent from '../components/ScrollArrowComponent.astro';
 ---
 
 <Layout title='About - Joany Buclon'>
   <div>
-    <div class='flex flex-col justify-center min-h-screen items-center p-10 pt-0'>
+    <div class='relative flex flex-col justify-center min-h-screen items-center p-10 pt-0'>
       <h1 class='text-8xl'>About Me</h1>
+      <ScrollArrowComponent />
     </div>
     <div class='flex flex-col p-10 gap-2'>
       <p>

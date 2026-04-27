@@ -1,0 +1,72 @@
+<div class='scroll-arrow absolute flex bottom-8 left-1/2'>
+  <div class='down-arrow -rotate-45'></div>
+  <div class='down-arrow arrow-center'></div>
+  <div class='down-arrow rotate-45'></div>
+</div>
+
+<style>
+  .scroll-arrow {
+    animation: arrowMove 2s ease-in-out infinite;
+    animation-delay: 5s;
+    animation-fill-mode: backwards;
+  }
+
+  .down-arrow {
+    margin: auto;
+    display: block;
+    background-color: white;
+    width: 2px;
+    height: 25px;
+    margin: 5px;
+    margin-bottom: 20px;
+    animation: lineFade 2s ease-in-out infinite;
+    animation-delay: 5s;
+    animation-fill-mode: backwards;
+  }
+
+  .arrow-center {
+    animation: lineFadeLate 2s ease-in-out infinite;
+    animation-delay: 5s;
+    animation-fill-mode: backwards;
+    margin-top: -6px;
+  }
+
+  @keyframes arrowMove {
+    0% {
+      transform: translateX(-50%) translateY(-8px);
+    }
+    50% {
+      transform: translateX(-50%) translateY(0px);
+    }
+    100% {
+      transform: translateX(-50%) translateY(8px);
+    }
+  }
+
+  @keyframes lineFade {
+    0% {
+      opacity: 0;
+    }
+    50% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+
+  @keyframes lineFadeLate {
+    0% {
+      opacity: 0;
+    }
+    20% {
+      opacity: 0;
+    }
+    65% {
+      opacity: 1;
+    }
+    100% {
+      opacity: 0;
+    }
+  }
+</style>
