@@ -185,8 +185,14 @@ const works = [
 
   items.forEach((item) => {
     item.addEventListener('click', () => {
-      const id = item.dataset.id;
-      descriptions.forEach((d) => d.classList.toggle('is-active', d.dataset.id === id));
+      if (item instanceof HTMLElement) {
+        const id = item.dataset.id;
+        descriptions.forEach((d) => {
+          if (d instanceof HTMLElement) {
+            d.classList.toggle('is-active', d.dataset.id === id);
+          }
+        });
+      }
     });
   });
 </script>
