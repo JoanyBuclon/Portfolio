@@ -1,46 +1,195 @@
-<div class='timeline'>
+---
+const internships = [
+  {
+    id: 1,
+    title: 'BAC S SI',
+    subtitle: 'Victor Duruy highschool',
+    when: '2009 to 2012',
+    description: '',
+  },
+  {
+    id: 2,
+    title: 'Web Developer',
+    subtitle: 'Aca-o - Internship',
+    when: 'september to december 2013',
+    description: '',
+  },
+  {
+    id: 3,
+    title: 'C# Developer',
+    subtitle: 'Potez Aeronautique - Internship',
+    when: 'june to august 2014',
+    description: '',
+  },
+  {
+    id: 4,
+    title: 'Web Developer',
+    subtitle: 'CGPME - Internship',
+    when: 'february to may 2015',
+    description: '',
+  },
+  {
+    id: 5,
+    title: 'php Developer',
+    subtitle: 'Cartegie - Internship',
+    when: 'octobre 2015 to february 2016',
+    description: '',
+  },
+  {
+    id: 6,
+    title: 'C# Developer',
+    subtitle: 'Cartegie - Internship',
+    when: 'february to july 2017',
+    description: '',
+  },
+  {
+    id: 7,
+    title: 'SI Manager Diploma',
+    subtitle: 'Cesi Engineering School',
+    when: '2012 to 2017',
+    description: '',
+  },
+];
+const works = [
+  {
+    id: 8,
+    title: 'C# Software Developer',
+    subtitle: 'Cdicsount for SII',
+    when: 'september 2017 to november 2018',
+    description: '',
+  },
+  {
+    id: 9,
+    title: 'Software Engineer',
+    subtitle: 'Idaia Group',
+    when: 'november 2018 to september 2022',
+    description: '',
+  },
+  {
+    id: 10,
+    title: 'Backend Developer',
+    subtitle: 'SLB for Sfeir',
+    when: 'october 2022 to october 2025',
+    description: '',
+  },
+  {
+    id: 11,
+    title: '.Net Advanced Developer',
+    subtitle: 'Betclic for Sfeir',
+    when: 'october 2025 to april 2026',
+    description: '',
+  },
+  {
+    id: 12,
+    title: 'Lead Tech',
+    subtitle: 'AJ Innov',
+    when: 'april 2026 to current day',
+    description: '',
+  },
+];
+---
+
+<div class='timeline mode-work'>
   <div class='flex flex-row'>
-    <div class='content'>
+    <div class='content internships mode-work cursor-pointer text-yellow-300'>
       <div class='main'>
-        <h3 class='text-2xl'>A First Title</h3>
-        <p>A subtle subtitle</p>
+        <h3 class='text-2xl'>education</h3>
+        <p>click to expand</p>
       </div>
       <div class='elements'>
-        <div class='round'></div>
-        <div class='line'></div>
+        <div class='round border-yellow-300 border-2'></div>
+        <div class='line bg-yellow-300'></div>
       </div>
     </div>
-    <div class='content'>
+    {
+      internships.map((ex) => (
+        <div class='content mode-internship cursor-pointer text-yellow-300' data-id={ex.id}>
+          <div class='main'>
+            <h3 class='text-2xl'>{ex.title}</h3>
+            <p>{ex.subtitle}</p>
+          </div>
+          <div class='elements'>
+            <div class='round border-yellow-300 border-2' />
+            <div class='line bg-yellow-300' />
+          </div>
+        </div>
+      ))
+    }
+    {
+      works.map((ex) => (
+        <div class='content mode-work cursor-pointer text-red-400' data-id={ex.id}>
+          <div class='main'>
+            <h3 class='text-2xl'>{ex.title}</h3>
+            <p>{ex.subtitle}</p>
+          </div>
+          <div class='elements'>
+            <div class='round bg-red-400' />
+            <div class='line bg-red-400' />
+          </div>
+        </div>
+      ))
+    }
+    <div class='content works mode-internship cursor-pointer text-red-400'>
       <div class='main'>
-        <h3 class='text-2xl'>The Second Title</h3>
-        <p>An it's own sub</p>
+        <h3 class='text-2xl'>jobs</h3>
+        <p>click to expand</p>
       </div>
       <div class='elements'>
-        <div class='round'></div>
-        <div class='line'></div>
-      </div>
-    </div>
-    <div class='content'>
-      <div class='main'>
-        <h3 class='text-2xl'>Another Title</h3>
-        <p>This time a longer subtitle since I have to test this</p>
-      </div>
-      <div class='elements'>
-        <div class='round'></div>
-        <div class='line'></div>
-      </div>
-    </div>
-    <div class='content'>
-      <div class='main'>
-        <h3 class='text-2xl'>The Last Title</h3>
-        <p>No idea what to put here yet</p>
-      </div>
-      <div class='elements'>
-        <div class='round'></div>
+        <div class='round bg-red-400'></div>
+        <div class='line bg-red-400'></div>
       </div>
     </div>
   </div>
+  <div class='descriptions'>
+    <div class='description is-active' data-id='default'>
+      <p>Click on a timeline item to see details</p>
+    </div>
+    {
+      internships.map((intern) => (
+        <div class='description' data-id={intern.id}>
+          <h3 class='text-2xl'>{intern.title}</h3>
+          <p>{intern.subtitle}</p>
+          <p>{intern.when}</p>
+          <p>{intern.description}</p>
+        </div>
+      ))
+    }
+    {
+      works.map((work) => (
+        <div class='description' data-id={work.id}>
+          <h3 class='text-2xl'>{work.title}</h3>
+          <p>{work.subtitle}</p>
+          <p>{work.when}</p>
+          <p>{work.description}</p>
+        </div>
+      ))
+    }
+  </div>
 </div>
+
+<script>
+  const timeline = document.querySelector('.timeline');
+  const internships = document.querySelector('.internships');
+  const works = document.querySelector('.works');
+  if (internships && timeline)
+    internships.addEventListener('click', () => {
+      timeline.classList.replace('mode-work', 'mode-internship');
+    });
+  if (works && timeline)
+    works.addEventListener('click', () => {
+      timeline.classList.replace('mode-internship', 'mode-work');
+    });
+
+  const items = document.querySelectorAll('.content[data-id]');
+  const descriptions = document.querySelectorAll('.description');
+
+  items.forEach((item) => {
+    item.addEventListener('click', () => {
+      const id = item.dataset.id;
+      descriptions.forEach((d) => d.classList.toggle('is-active', d.dataset.id === id));
+    });
+  });
+</script>
 
 <style>
   .timeline {
@@ -53,11 +202,12 @@
   }
   .content {
     flex: 1;
+    display: none;
   }
+
   .round {
     display: block;
     border-radius: 50%;
-    background-color: white;
     width: 15px;
     height: 15px;
   }
@@ -69,13 +219,27 @@
     display: block;
     flex: 1;
     height: 2px;
-    background-color: white;
   }
+  .timeline.mode-work .mode-work:not(:has(~ .mode-work)) .line,
+  .timeline.mode-internship .mode-internship:not(:has(~ .mode-internship)) .line {
+    flex: 0.2;
+  }
+
   .main {
     rotate: -45deg;
     transform-origin: bottom left;
     white-space: nowrap;
-    margin-left: 21px;
-    margin-bottom: 10px;
+    overflow: visible;
+    width: 140px;
+  }
+  .timeline.mode-work .mode-work,
+  .timeline.mode-internship .mode-internship {
+    display: block;
+  }
+  .description {
+    display: none;
+  }
+  .description.is-active {
+    display: block;
   }
 </style>
