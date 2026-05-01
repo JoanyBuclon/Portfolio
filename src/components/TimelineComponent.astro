@@ -3,51 +3,63 @@ const internships = [
   {
     id: 1,
     title: 'BAC S SI',
-    subtitle: 'Victor Duruy highschool',
+    subtitle: 'Victor Duruy highschool A-level',
     when: '2009 to 2012',
-    description: '',
+    year: 2012,
+    description:
+      'French A-level equivalent obtained in 2012 following the science and engineering course.\nI did a bit of programming in C during that time but it was pretty minor.',
   },
   {
     id: 2,
     title: 'Web Developer',
-    subtitle: 'Aca-o - Internship',
+    subtitle: 'Internship at Aca-o',
     when: 'september to december 2013',
-    description: '',
+    year: 2013,
+    description:
+      '3 months internship as a web developer for the Aca-o web agency.\nI mainly used php with the yii web framework and mysql.\nIt was my first ever job in IT.',
   },
   {
     id: 3,
     title: 'C# Developer',
-    subtitle: 'Potez Aeronautique - Internship',
+    subtitle: 'Internship at Potez Aeronautique',
     when: 'june to august 2014',
-    description: '',
+    year: 2014,
+    description:
+      '3 months internship as a .net developer.\nBack then we were using old .net framework versions with C#, wpf and vb6.\nWe were working on software for industrial level furnaces designed for plane parts.',
   },
   {
     id: 4,
     title: 'Web Developer',
-    subtitle: 'CGPME - Internship',
+    subtitle: 'Internship at CGPME',
     when: 'february to may 2015',
-    description: '',
+    year: 2015,
+    description:
+      '3 months internship as a web developer.\nI had to collect the requirements, design and build a complete web app from scratch.\nAs the only tech on the project, I used php and mysql for this.',
   },
   {
     id: 5,
     title: 'php Developer',
-    subtitle: 'Cartegie - Internship',
+    subtitle: 'Internship at Cartegie',
     when: 'octobre 2015 to february 2016',
-    description: '',
+    description:
+      '4 months internship as a php developer.\nI worked in php on a web tracking tool based on matomo and elasticsearch.\nDuring the internship I also designed a querying tool in C#.',
   },
   {
     id: 6,
     title: 'C# Developer',
-    subtitle: 'Cartegie - Internship',
+    subtitle: 'Internship at Cartegie',
     when: 'february to july 2017',
-    description: '',
+    year: 2017,
+    description:
+      '6 months internship working as a .net developer.\nI worked on a full-scale back-office web app in .net framework with asp.net mvc and sql server.\nI also helped handle and plan sprints with the project manager.',
   },
   {
     id: 7,
     title: 'SI Manager Diploma',
-    subtitle: 'Cesi Engineering School',
+    subtitle: "Cesi engineering school master's degree",
     when: '2012 to 2017',
-    description: '',
+    description:
+      "Master's degree from the Cesi Engineering school.\nAfter all those classes and internships, it was time for me to start my working life!",
   },
 ];
 const works = [
@@ -56,41 +68,49 @@ const works = [
     title: 'C# Software Developer',
     subtitle: 'Cdicsount for SII',
     when: 'september 2017 to november 2018',
-    description: '',
+    year: 2017,
+    description:
+      'On-site Consultant integrated with the .Net Technical Specialists team.\nI worked in .net implementing company-specific rules for the Roslyn compiler.\nApart from the meta-programming stuff, I helped with the global migration for all developers including:\n- .net framework to .net core migration, preparing example projets and tutorials\n- monolitic to micro-services migration with architectural example and specific connectors',
   },
   {
     id: 9,
     title: 'Software Engineer',
     subtitle: 'Idaia Group',
     when: 'november 2018 to september 2022',
-    description: '',
+    year: 2018,
+    description:
+      'As part of the Editing team, I worked on a collection of both internal and client apps.\nThe main stack I used was .net 6 and angular as well as docker, sql server and elasticsearch.',
   },
   {
     id: 10,
     title: 'Backend Developer',
     subtitle: 'SLB for Sfeir',
     when: 'october 2022 to october 2025',
-    description: '',
+    year: 2022,
+    description: 'To be added',
   },
   {
     id: 11,
     title: '.Net Advanced Developer',
     subtitle: 'Betclic for Sfeir',
     when: 'october 2025 to april 2026',
-    description: '',
+    year: 2025,
+    description: 'To be added',
   },
   {
     id: 12,
     title: 'Lead Tech',
     subtitle: 'AJ Innov',
     when: 'april 2026 to current day',
-    description: '',
+    year: 2026,
+    description: 'To be added',
   },
 ];
 ---
 
 <div class='timeline mode-work'>
   <div class='flex flex-row'>
+    <div class='line-edge bg-yellow-300'></div>
     <div class='content internships mode-work cursor-pointer text-yellow-300'>
       <div class='main'>
         <h3 class='text-2xl'>education</h3>
@@ -111,6 +131,7 @@ const works = [
           <div class='elements'>
             <div class='round border-yellow-300 border-2' />
             <div class='line bg-yellow-300' />
+            {ex.year && <span class='year'>{ex.year}</span>}
           </div>
         </div>
       ))
@@ -125,6 +146,7 @@ const works = [
           <div class='elements'>
             <div class='round bg-red-400' />
             <div class='line bg-red-400' />
+            {ex.year && <span class='year'>{ex.year}</span>}
           </div>
         </div>
       ))
@@ -146,7 +168,7 @@ const works = [
     </div>
     {
       internships.map((intern) => (
-        <div class='description' data-id={intern.id}>
+        <div class='description whitespace-pre-line' data-id={intern.id}>
           <h3 class='text-2xl'>{intern.title}</h3>
           <p>{intern.subtitle}</p>
           <p>{intern.when}</p>
@@ -156,7 +178,7 @@ const works = [
     }
     {
       works.map((work) => (
-        <div class='description' data-id={work.id}>
+        <div class='description whitespace-pre-line' data-id={work.id}>
           <h3 class='text-2xl'>{work.title}</h3>
           <p>{work.subtitle}</p>
           <p>{work.when}</p>
@@ -168,17 +190,51 @@ const works = [
 </div>
 
 <script>
+  const TRANSITION_MS = 700;
   const timeline = document.querySelector('.timeline');
   const internships = document.querySelector('.internships');
   const works = document.querySelector('.works');
+
+  let isTransitioning = false;
+  function lockTransition() {
+    isTransitioning = true;
+    setTimeout(() => {
+      isTransitioning = false;
+    }, TRANSITION_MS);
+  }
+
+  function resetActiveSelection() {
+    document.querySelectorAll('.content[data-id].is-active').forEach((i) => i.classList.remove('is-active'));
+    document.querySelectorAll('.description').forEach((d) => {
+      if (d instanceof HTMLElement) {
+        d.classList.toggle('is-active', d.dataset.id === 'default');
+      }
+    });
+  }
+
   if (internships && timeline)
     internships.addEventListener('click', () => {
+      if (isTransitioning) return;
+      if (!timeline.classList.contains('mode-work')) return;
+      lockTransition();
+      resetActiveSelection();
       timeline.classList.replace('mode-work', 'mode-internship');
     });
   if (works && timeline)
     works.addEventListener('click', () => {
+      if (isTransitioning) return;
+      if (!timeline.classList.contains('mode-internship')) return;
+      lockTransition();
+      resetActiveSelection();
       timeline.classList.replace('mode-internship', 'mode-work');
     });
+
+  function triggerPing(roundEl: Element) {
+    const halo = document.createElement('div');
+    halo.className = 'round-halo';
+    roundEl.appendChild(halo);
+    setTimeout(() => halo.remove(), TRANSITION_MS);
+  }
 
   const items = document.querySelectorAll('.content[data-id]');
   const descriptions = document.querySelectorAll('.description');
@@ -192,6 +248,9 @@ const works = [
             d.classList.toggle('is-active', d.dataset.id === id);
           }
         });
+        items.forEach((i) => i.classList.toggle('is-active', i === item));
+        const round = item.querySelector('.round');
+        if (round) triggerPing(round);
       }
     });
   });
@@ -205,10 +264,53 @@ const works = [
     justify-content: center;
     min-height: 70vh;
     padding: 0 2rem;
+    overflow: hidden;
   }
   .content {
-    flex: 1;
-    display: none;
+    flex: 0 0 auto;
+    width: 0;
+    min-width: 0;
+    pointer-events: none;
+    transition: width 0.7s ease-in-out;
+  }
+  .content .main,
+  .content .round {
+    opacity: 0;
+    transition: opacity 0.2s ease-in-out;
+  }
+  .content[data-id] .main {
+    scale: 0.5;
+    transition:
+      opacity 0.42s ease-out 0.1s,
+      scale 0.42s ease-out 0.1s;
+  }
+  .content[data-id] .round {
+    transition: opacity 0.15s ease-out;
+  }
+
+  .timeline.mode-internship .content.mode-work .round,
+  .timeline.mode-work .content.mode-internship:not(.works) .round {
+    transition: opacity 0s 0.7s;
+  }
+
+  .timeline.mode-internship .content.works .main,
+  .timeline.mode-work .content.internships .main {
+    transition: opacity 0.14s ease-in-out 0.6s;
+  }
+
+  .timeline.mode-work .content.works .main,
+  .timeline.mode-work .content.works .round,
+  .timeline.mode-work .content.works .line {
+    opacity: 0;
+    transition: opacity 0s;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .content,
+    .content .main,
+    .content .round {
+      transition: none;
+    }
   }
 
   .round {
@@ -216,10 +318,67 @@ const works = [
     border-radius: 50%;
     width: 15px;
     height: 15px;
+    position: relative;
+  }
+
+  .content[data-id].is-active .round {
+    transform: scale(1.7);
+    background: currentColor;
+  }
+
+  :global(.round-halo) {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    box-shadow: 0 0 0 2px currentColor;
+    pointer-events: none;
+    animation: round-ping 0.7s cubic-bezier(0, 0, 0.2, 1) forwards;
+  }
+  @keyframes round-ping {
+    from {
+      transform: scale(1);
+      opacity: 1;
+    }
+    to {
+      transform: scale(2.5);
+      opacity: 0;
+    }
   }
   .elements {
     display: flex;
     align-items: center;
+    position: relative;
+  }
+
+  .year {
+    position: absolute;
+    top: 100%;
+    left: 7.5px;
+    transform: translateX(-50%);
+    margin-top: 0.5rem;
+    color: rgb(209 213 219);
+    font-size: 0.75rem;
+    white-space: nowrap;
+    opacity: 0;
+    scale: 0.5;
+    transition:
+      opacity 0.42s ease-out 0.1s,
+      scale 0.42s ease-out 0.1s;
+  }
+  .timeline.mode-work .mode-work .year,
+  .timeline.mode-internship .mode-internship .year {
+    opacity: 1;
+    scale: 1;
+  }
+  .descriptions {
+    padding-top: 2rem;
+  }
+
+  .line-edge {
+    width: 25px;
+    height: 2px;
+    align-self: flex-end;
+    margin-bottom: 6.5px;
   }
   .line {
     display: block;
@@ -240,7 +399,15 @@ const works = [
   }
   .timeline.mode-work .mode-work,
   .timeline.mode-internship .mode-internship {
-    display: block;
+    width: 140px;
+    pointer-events: auto;
+  }
+  .timeline.mode-work .mode-work .main,
+  .timeline.mode-work .mode-work .round,
+  .timeline.mode-internship .mode-internship .main,
+  .timeline.mode-internship .mode-internship .round {
+    opacity: 1;
+    scale: 1;
   }
   .description {
     display: none;
