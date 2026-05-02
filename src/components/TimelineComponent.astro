@@ -25,7 +25,7 @@ const internships = [
     when: 'june to august 2014',
     year: 2014,
     description:
-      '3 months internship as a .net developer.\nBack then we were using old .net framework versions with C#, wpf and vb6.\nWe were working on software for industrial level furnaces designed for plane parts.',
+      '3 months internship as a .Net developer.\nBack then we were using old .Net framework versions with C#, wpf and vb6.\nWe were working on software for industrial level furnaces designed for plane parts.',
   },
   {
     id: 4,
@@ -38,9 +38,9 @@ const internships = [
   },
   {
     id: 5,
-    title: 'php Developer',
+    title: 'Php Developer',
     subtitle: 'Internship at Cartegie',
-    when: 'octobre 2015 to february 2016',
+    when: 'october 2015 to february 2016',
     description:
       '4 months internship as a php developer.\nI worked in php on a web tracking tool based on matomo and elasticsearch.\nDuring the internship I also designed a querying tool in C#.',
   },
@@ -51,7 +51,7 @@ const internships = [
     when: 'february to july 2017',
     year: 2017,
     description:
-      '6 months internship working as a .net developer.\nI worked on a full-scale back-office web app in .net framework with asp.net mvc and sql server.\nI also helped handle and plan sprints with the project manager.',
+      '6 months internship working as a .Net developer.\nI worked on a full-scale back-office web app in .Net framework with asp.Net mvc and sql server.\nI also helped handle and plan sprints with the project manager.',
   },
   {
     id: 7,
@@ -66,11 +66,11 @@ const works = [
   {
     id: 8,
     title: 'C# Software Developer',
-    subtitle: 'Cdicsount for SII',
+    subtitle: 'Cdiscount for SII',
     when: 'september 2017 to november 2018',
     year: 2017,
     description:
-      'On-site Consultant integrated with the .Net Technical Specialists team.\nI worked in .net implementing company-specific rules for the Roslyn compiler.\nApart from the meta-programming stuff, I helped with the global migration for all developers including:\n- .net framework to .net core migration, preparing example projets and tutorials\n- monolitic to micro-services migration with architectural example and specific connectors',
+      'On-site Consultant integrated with the .Net Technical Specialists team.\nI worked in .Net implementing company-specific rules for the Roslyn compiler.\nApart from the meta-programming stuff, I helped with the global migration for all developers including:\n- .Net framework to .Net core migration, preparing example projects and tutorials\n- monolithic to micro-services migration with architectural example and specific connectors',
   },
   {
     id: 9,
@@ -79,7 +79,7 @@ const works = [
     when: 'november 2018 to september 2022',
     year: 2018,
     description:
-      'As part of the Editing team, I worked on a collection of both internal and client apps.\nThe main stack I used was .net 6 and angular as well as docker, sql server and elasticsearch.',
+      'As part of the Editing team, I worked on a collection of both internal and client apps.\nThe main stack I used was .Net 6 and angular as well as docker, sql server, RabbitMQ and elasticsearch.\nI was responsible for architectural choices and code conception.\nI emphasized code quality and technical presentations to teach developers.',
   },
   {
     id: 10,
@@ -87,7 +87,8 @@ const works = [
     subtitle: 'SLB for Sfeir',
     when: 'october 2022 to october 2025',
     year: 2022,
-    description: 'To be added',
+    description:
+      'As part of a full-remote .Net team, I worked on a desktop app aimed to be deployed on oil rigs.\nThe technical stack was composed of mostly .Net with WinForms components.\nDuring my time there, I was also responsible for the .Net framework to .Net 8 migration,\nthe decrease of technical debt as well as the refresh of the CI/CD pipeline on Azure DevOps.\n\nIn the meantime at my employer Sfeir I was organizing and presenting internal tech events.\nI was also participating in recruiting talents by doing technical .Net tests for recruits.',
   },
   {
     id: 11,
@@ -95,7 +96,8 @@ const works = [
     subtitle: 'Betclic for Sfeir',
     when: 'october 2025 to april 2026',
     year: 2025,
-    description: 'To be added',
+    description:
+      'As part of the Trading Intelligence team, I was tasked with building a cloud-first and performant\nsuite of micro-services to analyze and react to events from various sports to generate real-time odds.\nThe technical stack was .Net 10, Kafka, Datadog, Github Actions with Terraform on an AWS Fargate environment.\n\nIn the meantime at my employer Sfeir I was still participating in recruiting talents by doing technical .Net tests.\nI also continued to organize and present popular tech events in Bordeaux.',
   },
   {
     id: 12,
@@ -103,15 +105,28 @@ const works = [
     subtitle: 'AJ Innov',
     when: 'april 2026 to current day',
     year: 2026,
-    description: 'To be added',
+    description:
+      "I'm currently working at AJ Innov, working on multiple cloud-first projects.\nI also have to manage and train a team of developers and am responsible for building various tech tools for the company.\nI like the challenge and work with php, python and .Net as well as AWS, Sentry and Terraform.\nI'm still presenting tech events in Bordeaux.",
   },
 ];
 ---
 
 <div class='timeline mode-work'>
+  <div class='mobile-toggle'>
+    <button
+      type='button'
+      data-mode='internship'
+      class='border-2 border-yellow-300 text-yellow-300 px-4 py-2 rounded-full cursor-pointer'>education</button
+    >
+    <button
+      type='button'
+      data-mode='work'
+      class='border-2 border-red-400 text-red-400 px-4 py-2 rounded-full cursor-pointer'>jobs</button
+    >
+  </div>
   <div class='flex flex-row'>
     <div class='line-edge bg-yellow-300'></div>
-    <div class='content internships mode-work cursor-pointer text-yellow-300'>
+    <div class='content internships mode-work cursor-pointer text-yellow-300 hover:text-yellow-200'>
       <div class='main'>
         <h3 class='text-2xl'>education</h3>
         <p>click to expand</p>
@@ -123,7 +138,7 @@ const works = [
     </div>
     {
       internships.map((ex) => (
-        <div class='content mode-internship cursor-pointer text-yellow-300' data-id={ex.id}>
+        <div class='content mode-internship cursor-pointer text-yellow-300 hover:text-yellow-200' data-id={ex.id}>
           <div class='main'>
             <h3 class='text-2xl'>{ex.title}</h3>
             <p>{ex.subtitle}</p>
@@ -133,12 +148,16 @@ const works = [
             <div class='line bg-yellow-300' />
             {ex.year && <span class='year'>{ex.year}</span>}
           </div>
+          <div class='inline-description whitespace-pre-line'>
+            <p class='inline-when'>{ex.when}</p>
+            <p class='inline-desc'>{ex.description}</p>
+          </div>
         </div>
       ))
     }
     {
       works.map((ex) => (
-        <div class='content mode-work cursor-pointer text-red-400' data-id={ex.id}>
+        <div class='content mode-work cursor-pointer text-red-400 hover:text-red-300' data-id={ex.id}>
           <div class='main'>
             <h3 class='text-2xl'>{ex.title}</h3>
             <p>{ex.subtitle}</p>
@@ -148,10 +167,14 @@ const works = [
             <div class='line bg-red-400' />
             {ex.year && <span class='year'>{ex.year}</span>}
           </div>
+          <div class='inline-description whitespace-pre-line'>
+            <p class='inline-when'>{ex.when}</p>
+            <p class='inline-desc'>{ex.description}</p>
+          </div>
         </div>
       ))
     }
-    <div class='content works mode-internship cursor-pointer text-red-400'>
+    <div class='content works mode-internship cursor-pointer text-red-400 hover:text-red-300'>
       <div class='main'>
         <h3 class='text-2xl'>jobs</h3>
         <p>click to expand</p>
@@ -164,14 +187,14 @@ const works = [
   </div>
   <div class='descriptions'>
     <div class='description is-active' data-id='default'>
-      <p>Click on a timeline item to see details</p>
+      <p class='italic'>Click on a timeline item to see details</p>
     </div>
     {
       internships.map((intern) => (
         <div class='description whitespace-pre-line' data-id={intern.id}>
           <h3 class='text-2xl'>{intern.title}</h3>
-          <p>{intern.subtitle}</p>
-          <p>{intern.when}</p>
+          <p class='text-lg'>{intern.subtitle}</p>
+          <p class='text-lg italic'>from {intern.when}</p>
           <p>{intern.description}</p>
         </div>
       ))
@@ -180,8 +203,8 @@ const works = [
       works.map((work) => (
         <div class='description whitespace-pre-line' data-id={work.id}>
           <h3 class='text-2xl'>{work.title}</h3>
-          <p>{work.subtitle}</p>
-          <p>{work.when}</p>
+          <p class='text-lg'>{work.subtitle}</p>
+          <p class='text-lg italic'>from {work.when}</p>
           <p>{work.description}</p>
         </div>
       ))
@@ -212,22 +235,25 @@ const works = [
     });
   }
 
-  if (internships && timeline)
-    internships.addEventListener('click', () => {
-      if (isTransitioning) return;
-      if (!timeline.classList.contains('mode-work')) return;
-      lockTransition();
-      resetActiveSelection();
-      timeline.classList.replace('mode-work', 'mode-internship');
+  function switchMode(targetMode: 'internship' | 'work') {
+    if (!timeline || isTransitioning) return;
+    if (timeline.classList.contains(`mode-${targetMode}`)) return;
+    const currentMode = targetMode === 'work' ? 'internship' : 'work';
+    lockTransition();
+    resetActiveSelection();
+    timeline.classList.replace(`mode-${currentMode}`, `mode-${targetMode}`);
+  }
+
+  if (internships) internships.addEventListener('click', () => switchMode('internship'));
+  if (works) works.addEventListener('click', () => switchMode('work'));
+
+  document.querySelectorAll('.mobile-toggle button').forEach((btn) => {
+    btn.addEventListener('click', () => {
+      if (btn instanceof HTMLElement && (btn.dataset.mode === 'work' || btn.dataset.mode === 'internship')) {
+        switchMode(btn.dataset.mode);
+      }
     });
-  if (works && timeline)
-    works.addEventListener('click', () => {
-      if (isTransitioning) return;
-      if (!timeline.classList.contains('mode-internship')) return;
-      lockTransition();
-      resetActiveSelection();
-      timeline.classList.replace('mode-internship', 'mode-work');
-    });
+  });
 
   function triggerPing(roundEl: Element) {
     const halo = document.createElement('div');
@@ -261,9 +287,7 @@ const works = [
     display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content: center;
-    min-height: 70vh;
-    padding: 0 2rem;
+    padding: 12rem 2rem 0;
     overflow: hidden;
   }
   .content {
@@ -372,6 +396,10 @@ const works = [
   }
   .descriptions {
     padding-top: 2rem;
+    display: grid;
+    align-items: center;
+    width: 100%;
+    max-width: 48rem;
   }
 
   .line-edge {
@@ -397,7 +425,10 @@ const works = [
     overflow: visible;
     width: 140px;
   }
-  .timeline.mode-work .mode-work,
+  .timeline.mode-work .mode-work {
+    width: 187px;
+    pointer-events: auto;
+  }
   .timeline.mode-internship .mode-internship {
     width: 140px;
     pointer-events: auto;
@@ -410,9 +441,156 @@ const works = [
     scale: 1;
   }
   .description {
-    display: none;
+    grid-column: 1;
+    grid-row: 1;
+    visibility: hidden;
+  }
+  .description[data-id='default'] {
+    text-align: center;
   }
   .description.is-active {
-    display: block;
+    visibility: visible;
+  }
+
+  .mobile-toggle {
+    display: none;
+  }
+  .inline-description {
+    display: none;
+  }
+
+  @media (max-width: 1023px) {
+    .timeline {
+      padding: 0;
+      min-height: auto;
+      overflow: visible;
+      align-items: stretch;
+    }
+    .timeline > .flex-row {
+      flex-direction: column;
+    }
+
+    .mobile-toggle {
+      display: flex;
+      gap: 0.75rem;
+      justify-content: center;
+      margin-bottom: 1.5rem;
+    }
+    .mobile-toggle button {
+      transition:
+        background-color 0.2s,
+        color 0.2s;
+    }
+    .timeline.mode-internship .mobile-toggle button[data-mode='internship'] {
+      background-color: rgb(253 224 71);
+      color: rgb(0 0 0);
+    }
+    .timeline.mode-work .mobile-toggle button[data-mode='work'] {
+      background-color: rgb(248 113 113);
+      color: rgb(0 0 0);
+    }
+
+    .line-edge {
+      display: none;
+    }
+    .content.internships,
+    .content.works {
+      display: none !important;
+    }
+    .timeline.mode-work .content[data-id].mode-internship,
+    .timeline.mode-internship .content[data-id].mode-work {
+      display: none;
+    }
+
+    .content {
+      width: 100%;
+      pointer-events: auto;
+      transition: none;
+      position: relative;
+      display: grid;
+      grid-template-columns: 1.5rem 1fr;
+      grid-template-areas:
+        'marker label'
+        'marker desc';
+      grid-auto-rows: min-content;
+      column-gap: 1rem;
+      padding: 0.25rem 0;
+      align-items: start;
+    }
+    .timeline.mode-work .content[data-id].mode-work,
+    .timeline.mode-internship .content[data-id].mode-internship {
+      width: 100%;
+    }
+
+    .content[data-id] .main,
+    .content[data-id] .round {
+      opacity: 1;
+      scale: 1;
+      transition: none;
+    }
+
+    .elements {
+      grid-area: marker;
+      flex-direction: column;
+      align-items: center;
+      align-self: stretch;
+      height: 100%;
+      position: static;
+    }
+    .line {
+      width: 2px;
+      height: auto;
+      flex: 1;
+      min-height: 1.5rem;
+    }
+    .timeline.mode-work .content.mode-work[data-id]:last-of-type .line,
+    .timeline.mode-internship .content.mode-internship[data-id]:last-of-type .line {
+      display: none;
+    }
+
+    .main {
+      grid-area: label;
+      rotate: 0deg;
+      transform-origin: 0 0;
+      width: auto;
+      white-space: normal;
+      overflow: visible;
+      padding-right: 2.5rem;
+    }
+    .main h3 {
+      font-size: 1.05rem;
+      line-height: 1.3;
+    }
+    .main p {
+      font-size: 0.85rem;
+    }
+
+    .year {
+      position: absolute;
+      top: 0.25rem;
+      right: 0;
+      left: auto;
+      margin-top: 0;
+      transform: none;
+      opacity: 1;
+      scale: 1;
+      transition: none;
+    }
+
+    .inline-description {
+      grid-area: desc;
+      display: none;
+      margin-top: 0.5rem;
+      padding-bottom: 0.5rem;
+      color: rgb(229 231 235);
+      font-size: 0.9rem;
+    }
+    .content[data-id].is-active .inline-description {
+      display: block;
+    }
+
+    .descriptions {
+      display: none;
+    }
   }
 </style>
