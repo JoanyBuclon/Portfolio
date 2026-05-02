@@ -2,6 +2,7 @@
 import Layout from '../layouts/Layout.astro';
 import ScrollArrowComponent from '../components/ScrollArrowComponent.astro';
 import TimelineComponent from '../components/TimelineComponent.astro';
+import SkillCardComponent from '../components/SkillCardComponent.astro';
 ---
 
 <Layout title='About - Joany Buclon'>
@@ -34,9 +35,12 @@ import TimelineComponent from '../components/TimelineComponent.astro';
         <h2 class='text-4xl'>History</h2>
         <TimelineComponent />
       </div>
-      <div class='flex flex-col p-10 gap-8 mb-20'>
+      <div class='flex flex-col p-10 gap-8'>
         <h2 class='text-4xl'>Skills</h2>
-        <p>Here a long list of keywords...</p>
+        <SkillCardComponent />
+      </div>
+      <div class='flex flex-col p-10 gap-8 mb-20'>
+        <h2 class='text-xl text-center'>aworkingmailaddress.com</h2>
       </div>
     </div>
   </div>
