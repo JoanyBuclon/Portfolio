@@ -1,7 +1,71 @@
 ---
-const cards = [{ title: 'card1', skills: ['', ''] }, { title: 'card2' }, { title: 'card3' }];
+import { pillars } from '../data/skills';
 ---
 
-<div class='cards'>
-  <p>A list of cards</p>
+<div class='pillars flex flex-col gap-12'>
+  {
+    pillars.map((pillar) => (
+      <section class='pillar' data-pillar={pillar.key}>
+        <header class='mb-6'>
+          <h3 class='text-3xl pillar-title'>{pillar.title}</h3>
+        </header>
+        <div class='cards grid gap-4 md:grid-cols-2 lg:grid-cols-4'>
+          {pillar.cards.map((card) => (
+            <article class='card bg-neutral-950 p-4 rounded'>
+              <h4 class='card-title text-lg font-bold mb-2'>{card.title}</h4>
+              <ul class='flex flex-wrap gap-1'>
+                {card.skills.map((skill) => (
+                  <li class='skill text-sm px-2 py-0.5 bg-neutral-800 rounded'>{skill}</li>
+                ))}
+              </ul>
+            </article>
+          ))}
+        </div>
+      </section>
+    ))
+  }
 </div>
+
+<style>
+  .pillar[data-pillar='build'] {
+    --pillar-color: rgb(56 189 248); /* sky-400 */
+  }
+  .pillar[data-pillar='operate'] {
+    --pillar-color: rgb(52 211 153); /* emerald-400 */
+  }
+  .pillar[data-pillar='explore'] {
+    --pillar-color: rgb(251 191 36); /* amber-400 */
+  }
+
+  .pillar-title {
+    color: var(--pillar-color);
+  }
+
+  .card {
+    border: 2px solid transparent;
+    border-top-color: var(--pillar-color);
+  }
+
+  .card-title,
+  .skill {
+    transition:
+      color 0.3s ease,
+      background-color 0.3s ease;
+  }
+
+  .card:hover .card-title {
+    color: var(--pillar-color);
+  }
+
+  .card:hover .skill {
+    background-color: var(--pillar-color);
+    color: rgb(0 0 0);
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .card-title,
+    .skill {
+      transition: none;
+    }
+  }
+</style>
