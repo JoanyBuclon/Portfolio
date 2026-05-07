@@ -1,8 +1,10 @@
 ---
+import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
 import ScrollArrowComponent from '../components/ScrollArrowComponent.astro';
 import TimelineComponent from '../components/TimelineComponent.astro';
 import SkillCardComponent from '../components/SkillCardComponent.astro';
+import mePhoto from '../assets/me.jpg';
 ---
 
 <Layout title='About - Joany Buclon'>
@@ -11,24 +13,33 @@ import SkillCardComponent from '../components/SkillCardComponent.astro';
       <h1 class='text-8xl'>About Me</h1>
       <ScrollArrowComponent />
     </div>
-    <div class='max-w-9/10 mx-auto px-6'>
-      <div class='flex flex-col p-10 gap-2'>
-        <p>
-          Hello <span class='font-semibold'>Beta Readers</span>! The following content comes directly from the current
-          portfolio over at <a class='text-violet-400 hover:text-violet-300' href='https://joanybuclon.com'
-            >the main url</a
-          >! It will be updated as we get closer to the final version.
-        </p>
-        <p>
-          Hi, my name is Joany! I convert coffee, music and books into code for humans and machines alike. I currently
-          live near Bordeaux, France. I work 4/5ths for Sfeir Bordeaux as a backend-developer.
-        </p>
-        <p>
-          I spend my free time on various hobbies that inspire my personal projects. Curious and quiet, learning new
-          things fuels my creativity. I love spending time with my friends. I’m also a fan of movies, literature and
-          gaming.
-        </p>
-        <p>Don’t hesitate to read more about me and my projects!</p>
+    <div class='max-w-7xl mx-auto px-6 mt-32'>
+      <div class='flex flex-col md:flex-row md:items-center p-10 gap-6 md:gap-10'>
+        <div class='flex-1'>
+          <h2 class='text-3xl font-semibold mb-6'>Hi, my name is Joany!</h2>
+          <div class='space-y-4 text-lg leading-relaxed'>
+            <p>
+              I'm a <span class='text-violet-400'>Tech Lead Engineer</span> living in
+              <span class='text-violet-400'>Bordeaux</span>, France. I've been working in the field since 2017, helping
+              companies of all sizes ship products with performance and code quality in mind.
+            </p>
+            <p>
+              I'm also pouring my energy into personal projects, from writing
+              <span class='text-violet-400'>fantasy books</span> to coding
+              <span class='text-violet-400'>video games</span>.
+            </p>
+            <p>Feel free to learn more about me and my projects. I can't wait to share them with you!</p>
+          </div>
+        </div>
+        <Image
+          src={mePhoto}
+          alt='Portrait of Joany Buclon'
+          widths={[200, 400]}
+          sizes='(max-width: 768px) 192px, 224px'
+          format='webp'
+          quality={95}
+          class='rounded-full object-cover aspect-square w-48 md:w-56 shrink-0'
+        />
       </div>
       <div class='flex flex-col p-10 gap-8'>
         <h2 class='text-5xl'>Experience</h2>
