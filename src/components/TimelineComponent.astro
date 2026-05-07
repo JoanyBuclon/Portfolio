@@ -178,8 +178,8 @@ import { internships, works } from '../data/timeline';
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 12rem 2rem 0;
-    overflow: hidden;
+    padding: 12rem 0 0;
+    overflow: visible;
   }
   .content {
     flex: 0 0 auto;
@@ -294,9 +294,10 @@ import { internships, works } from '../data/timeline';
   }
 
   .line-edge {
-    width: 25px;
+    width: 50px;
     height: 2px;
     align-self: flex-end;
+    margin-left: 100px;
     margin-bottom: 6.5px;
   }
   .line {
@@ -306,7 +307,7 @@ import { internships, works } from '../data/timeline';
   }
   .timeline.mode-work .mode-work:not(:has(~ .mode-work)) .line,
   .timeline.mode-internship .mode-internship:not(:has(~ .mode-internship)) .line {
-    flex: 0.2;
+    flex: 0.4;
   }
 
   .main {
