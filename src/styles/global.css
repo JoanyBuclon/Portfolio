@@ -1,1 +1,10 @@
 @import "tailwindcss";
+
+a:hover {
+    color: oklch(70.2% 0.183 293.541);
+}
+
+::selection {                                                                                                                                                                                                                                                  
+    background-color: oklch(70.2% 0.183 293.541);
+    color: black;
+}

@@ -39,7 +39,6 @@
   }
 
   .anchor span {
-    font-family: 'SourceCodePro';
     writing-mode: vertical-rl;
   }
 
@@ -66,6 +65,14 @@
   .is-hidden {
     opacity: 0;
     visibility: hidden;
+  }
+
+  .anchor:hover span {
+    color: oklch(70.2% 0.183 293.541);
+  }
+
+  .anchor:hover .line {
+    background-color: oklch(70.2% 0.183 293.541);
   }
 
   @media screen and (max-width: 600px) {
