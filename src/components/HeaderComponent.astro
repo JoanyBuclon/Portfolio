@@ -3,7 +3,7 @@ const pathname = Astro.url.pathname;
 const isActive = (href: string) => pathname === href || (href !== '/' && pathname.startsWith(href));
 ---
 
-<header class='fixed top-0 right-0 z-10 flex justify-end gap-2 p-10'>
+<header class='fixed top-0 inset-x-0 z-10 flex justify-end gap-2 p-10 transition-colors duration-200 has-[.nav.display]:bg-neutral-950'>
   <div class='burger flex flex-col items-end'>
     <div id='nav-icon2'>
       <span></span>
