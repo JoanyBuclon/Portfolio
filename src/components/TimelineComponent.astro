@@ -7,36 +7,36 @@ import { internships, works } from '../data/timeline';
     <button
       type='button'
       data-mode='internship'
-      class='border-2 border-yellow-300 text-yellow-300 px-4 py-2 rounded-full cursor-pointer'>education</button
+      class='border-2 border-emerald-400 text-emerald-400 px-4 py-2 rounded-full cursor-pointer'>education</button
     >
     <button
       type='button'
       data-mode='work'
-      class='border-2 border-red-400 text-red-400 px-4 py-2 rounded-full cursor-pointer'>jobs</button
+      class='border-2 border-blue-400 text-blue-400 px-4 py-2 rounded-full cursor-pointer'>jobs</button
     >
   </div>
   <div class='flex flex-row'>
-    <div class='line-edge bg-yellow-300'></div>
-    <div class='content internships mode-work cursor-pointer text-yellow-300 hover:text-yellow-200'>
+    <div class='line-edge bg-emerald-400'></div>
+    <div class='content internships mode-work cursor-pointer text-emerald-400 hover:text-emerald-300'>
       <div class='main'>
         <h3 class='text-2xl'>education</h3>
         <p>click to expand</p>
       </div>
       <div class='elements'>
-        <div class='round border-yellow-300 border-2'></div>
-        <div class='line bg-yellow-300'></div>
+        <div class='round border-emerald-400 border-2'></div>
+        <div class='line bg-emerald-400'></div>
       </div>
     </div>
     {
       internships.map((ex) => (
-        <div class='content mode-internship cursor-pointer text-yellow-300 hover:text-yellow-200' data-id={ex.id}>
+        <div class='content mode-internship cursor-pointer text-emerald-400 hover:text-emerald-300' data-id={ex.id}>
           <div class='main'>
             <h3 class='text-2xl'>{ex.title}</h3>
             <p>{ex.subtitle}</p>
           </div>
           <div class='elements'>
-            <div class='round border-yellow-300 border-2' />
-            <div class='line bg-yellow-300' />
+            <div class='round border-emerald-400 border-2' />
+            <div class='line bg-emerald-400' />
             {ex.year && <span class='year'>{ex.year}</span>}
           </div>
           <div class='inline-description whitespace-pre-line'>
@@ -48,14 +48,14 @@ import { internships, works } from '../data/timeline';
     }
     {
       works.map((ex) => (
-        <div class='content mode-work cursor-pointer text-red-400 hover:text-red-300' data-id={ex.id}>
+        <div class='content mode-work cursor-pointer text-blue-400 hover:text-blue-300' data-id={ex.id}>
           <div class='main'>
             <h3 class='text-2xl'>{ex.title}</h3>
             <p>{ex.subtitle}</p>
           </div>
           <div class='elements'>
-            <div class='round bg-red-400' />
-            <div class='line bg-red-400' />
+            <div class='round bg-blue-400' />
+            <div class='line bg-blue-400' />
             {ex.year && <span class='year'>{ex.year}</span>}
           </div>
           <div class='inline-description whitespace-pre-line'>
@@ -65,14 +65,14 @@ import { internships, works } from '../data/timeline';
         </div>
       ))
     }
-    <div class='content works mode-internship cursor-pointer text-red-400 hover:text-red-300'>
+    <div class='content works mode-internship cursor-pointer text-blue-400 hover:text-blue-300'>
       <div class='main'>
         <h3 class='text-2xl'>jobs</h3>
         <p>click to expand</p>
       </div>
       <div class='elements'>
-        <div class='round bg-red-400'></div>
-        <div class='line bg-red-400'></div>
+        <div class='round bg-blue-400'></div>
+        <div class='line bg-blue-400'></div>
       </div>
     </div>
   </div>
@@ -374,11 +374,11 @@ import { internships, works } from '../data/timeline';
         color 0.2s;
     }
     .timeline.mode-internship .mobile-toggle button[data-mode='internship'] {
-      background-color: rgb(253 224 71);
+      background-color: rgb(52 211 153);
       color: rgb(0 0 0);
     }
     .timeline.mode-work .mobile-toggle button[data-mode='work'] {
-      background-color: rgb(248 113 113);
+      background-color: rgb(96 165 250);
       color: rgb(0 0 0);
     }
 
