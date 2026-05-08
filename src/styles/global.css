@@ -1,5 +1,10 @@
 @import "tailwindcss";
 
+@theme inline {
+    --font-sans: var(--font-neue-montreal);
+    --font-display: var(--font-migra);
+}
+
 a:hover {
     color: oklch(70.2% 0.183 293.541);
 }

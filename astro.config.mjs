@@ -1,5 +1,5 @@
 // @ts-check
-import { defineConfig } from 'astro/config';
+import { defineConfig, fontProviders } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 
@@ -10,5 +10,42 @@ export default defineConfig({
   },
   build: {
     inlineStylesheets: 'always'
-  }
+  },
+  fonts: [
+    {
+      provider: fontProviders.local(),
+      name: 'PP Migra',
+      cssVariable: '--font-migra',
+      fallbacks: ['serif'],
+      options: {
+        variants: [
+          {
+            weight: 800,
+            style: 'italic',
+            src: ['./src/assets/fonts/MigraItalic-ExtraboldItalic.woff2']
+          }
+        ]
+      }
+    },
+    {
+      provider: fontProviders.local(),
+      name: 'PP Neue Montreal',
+      cssVariable: '--font-neue-montreal',
+      fallbacks: ['sans-serif'],
+      options: {
+        variants: [
+          {
+            weight: 400,
+            style: 'normal',
+            src: ['./src/assets/fonts/PPNeueMontreal-Regular.woff2']
+          },
+          {
+            weight: 600,
+            style: 'normal',
+            src: ['./src/assets/fonts/PPNeueMontreal-Semibold.woff2']
+          }
+        ]
+      }
+    }
+  ]
 });

@@ -1,4 +1,9 @@
-<header class='fixed top-0 right-0 z-10 flex justify-end gap-2 p-6'>
+---
+const pathname = Astro.url.pathname;
+const isActive = (href: string) => pathname === href || (href !== '/' && pathname.startsWith(href));
+---
+
+<header class='fixed top-0 right-0 z-10 flex justify-end gap-2 p-10'>
   <div class='burger flex flex-col items-end'>
     <div id='nav-icon2'>
       <span></span>
@@ -9,13 +14,13 @@
       <span></span>
     </div>
 
-    <div class='nav'>
-      <a href='/'>home</a>
-      <a href='/about'>about</a>
+    <div class='nav text-lg'>
+      <a href='/' class:list={[{ active: isActive('/') }]}>home</a>
+      <a href='/about' class:list={[{ active: isActive('/about') }]}>about</a>
       <div class='spacer pt-2 pb-2'></div>
-      <a href='https://github.com/JoanyBuclon' target='_blank'>github</a>
-      <a href='https://linkedin.com/in/joany-buclon/' target='_blank'>linkedin</a>
-      <a href='mailto: joany.buclon@viacesi.fr'>email</a>
+      <a href='https://github.com/JoanyBuclon' target='_blank'>github ↗</a>
+      <a href='https://linkedin.com/in/joany-buclon/' target='_blank'>linkedin ↗</a>
+      <a href='mailto: joany.buclon@viacesi.fr'>email ↗</a>
     </div>
   </div>
 </header>
@@ -57,6 +62,10 @@
 
   .nav.display {
     display: flex;
+  }
+
+  .nav a.active {
+    font-weight: 600;
   }
 
   /* Menu Burger Still */
