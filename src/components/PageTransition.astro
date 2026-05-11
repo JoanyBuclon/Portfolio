@@ -1,0 +1,134 @@
+---
+import { generateLettersHtml } from '../lib/page-transition';
+
+const initialLettersHtml = generateLettersHtml();
+---
+
+<div class='page-transition' aria-hidden='true' transition:persist>
+  <div class='letters font-display' set:html={initialLettersHtml}></div>
+</div>
+
+<script>
+  import { generateLettersHtml } from '../lib/page-transition';
+
+  interface PreparationEvent extends Event {
+    loader: () => Promise<void>;
+  }
+
+  let isFirstLoad = true;
+
+  function regenerateLetters(): void {
+    const container = document.querySelector<HTMLElement>('.page-transition .letters');
+    if (!container) return;
+    container.innerHTML = generateLettersHtml();
+  }
+
+  function playCover(el: Element): Promise<void> {
+    el.classList.remove('is-hidden', 'is-revealing');
+    el.classList.add('is-covering');
+    return new Promise<void>((resolve) => {
+      el.addEventListener('animationend', () => resolve(), { once: true });
+    });
+  }
+
+  function playReveal(el: Element): void {
+    el.classList.remove('is-covering', 'is-hidden');
+    el.classList.add('is-revealing');
+    el.addEventListener(
+      'animationend',
+      () => {
+        el.classList.add('is-hidden');
+        el.classList.remove('is-revealing');
+        regenerateLetters();
+      },
+      { once: true },
+    );
+  }
+
+  document.addEventListener('astro:page-load', () => {
+    if (!isFirstLoad) return;
+    isFirstLoad = false;
+    const el = document.querySelector('.page-transition');
+    if (!el) return;
+    playReveal(el);
+  });
+
+  document.addEventListener('astro:before-preparation', (e: Event) => {
+    const event = e as PreparationEvent;
+    const originalLoader = event.loader;
+    event.loader = async () => {
+      const el = document.querySelector('.page-transition');
+      if (el) {
+        await Promise.all([originalLoader(), playCover(el)]);
+      } else {
+        await originalLoader();
+      }
+    };
+  });
+
+  document.addEventListener('astro:after-swap', () => {
+    const el = document.querySelector('.page-transition');
+    if (el) playReveal(el);
+  });
+</script>
+
+<style>
+  .page-transition {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+    background: #0a0a0a;
+    pointer-events: none;
+    overflow: hidden;
+    will-change: clip-path;
+  }
+
+  .page-transition.is-covering {
+    animation: pt-cover 100ms ease-out forwards;
+  }
+
+  .page-transition.is-revealing {
+    animation: pt-reveal 180ms ease-in forwards;
+  }
+
+  .page-transition.is-hidden {
+    display: none;
+  }
+
+  @keyframes pt-cover {
+    from {
+      clip-path: inset(0 0 100% 0);
+    }
+    to {
+      clip-path: inset(0 0 0 0);
+    }
+  }
+
+  @keyframes pt-reveal {
+    from {
+      clip-path: inset(0 0 0 0);
+    }
+    to {
+      clip-path: inset(100% 0 0 0);
+    }
+  }
+
+  .letters {
+    width: 100%;
+    height: 100%;
+    font-size: clamp(1.25rem, 2.2vw, 2rem);
+    line-height: 1.15;
+    letter-spacing: 0.08em;
+    word-break: break-all;
+    user-select: none;
+    padding: 0;
+    box-sizing: border-box;
+    overflow: hidden;
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .page-transition {
+      display: none !important;
+    }
+  }
+</style>

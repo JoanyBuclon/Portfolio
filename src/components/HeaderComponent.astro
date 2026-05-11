@@ -26,20 +26,22 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
 </header>
 
 <script>
-  const burger = document.querySelector('.burger');
-  const navicon = document.querySelector('#nav-icon2');
-  const nav = document.querySelector('.nav');
-  if (burger && navicon && nav) {
+  function attachBurger(): void {
+    const burger = document.querySelector<HTMLElement>('.burger');
+    const navicon = document.querySelector<HTMLElement>('#nav-icon2');
+    const nav = document.querySelector<HTMLElement>('.nav');
+    if (!burger || !navicon || !nav) return;
     burger.addEventListener('mouseenter', () => {
       navicon.classList.add('open');
       nav.classList.add('display');
     });
-
     burger.addEventListener('mouseleave', () => {
       navicon.classList.remove('open');
       nav.classList.remove('display');
     });
   }
+
+  document.addEventListener('astro:page-load', attachBurger);
 </script>
 
 <style>

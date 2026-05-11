@@ -1,9 +1,11 @@
 ---
 import '../styles/global.css';
 import { Font } from 'astro:assets';
+import { ClientRouter } from 'astro:transitions';
 import HeaderComponent from '../components/HeaderComponent.astro';
 import AnchorComponent from '../components/AnchorComponent.astro';
 import BetaComponent from '../components/BetaComponent.astro';
+import PageTransition from '../components/PageTransition.astro';
 const { title } = Astro.props;
 ---
 
@@ -21,9 +23,12 @@ const { title } = Astro.props;
     <meta name='generator' content={Astro.generator} />
     <Font cssVariable='--font-migra' preload />
     <Font cssVariable='--font-neue-montreal' preload />
+    <ClientRouter />
     <title>{title}</title>
   </head>
   <body class='bg-neutral-950 text-white min-h-screen flex flex-col'>
+    <PageTransition />
+
     <!-- THIS IS A TEMPORARY COMPONENT -->
     <BetaComponent />
 

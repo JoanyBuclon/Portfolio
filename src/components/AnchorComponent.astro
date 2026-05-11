@@ -1,19 +1,24 @@
 <script>
-  const anchor = document.querySelector('.anchor');
-
-  if (anchor) {
-    window.addEventListener('scroll', () => {
-      if (window.scrollY > 150) {
-        anchor.classList.remove('is-hidden');
-      } else {
-        anchor.classList.add('is-hidden');
-      }
-    });
-
-    anchor.addEventListener('click', () => {
-      document.body.scrollIntoView();
-    });
+  function toggleAnchor(): void {
+    const anchor = document.querySelector<HTMLElement>('.anchor');
+    if (!anchor) return;
+    if (window.scrollY > 150) {
+      anchor.classList.remove('is-hidden');
+    } else {
+      anchor.classList.add('is-hidden');
+    }
   }
+
+  function onAnchorClick(e: MouseEvent): void {
+    const target = e.target as Element | null;
+    if (target?.closest('.anchor')) {
+      document.body.scrollIntoView();
+    }
+  }
+
+  window.addEventListener('scroll', toggleAnchor);
+  document.addEventListener('click', onAnchorClick);
+  document.addEventListener('astro:page-load', toggleAnchor);
 </script>
 
 <button class='anchor is-hidden'>

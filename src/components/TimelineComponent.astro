@@ -105,72 +105,76 @@ import { internships, works } from '../data/timeline';
 
 <script>
   const TRANSITION_MS = 700;
-  const timeline = document.querySelector('.timeline');
-  const internships = document.querySelector('.internships');
-  const works = document.querySelector('.works');
 
-  let isTransitioning = false;
-  function lockTransition() {
-    isTransitioning = true;
-    setTimeout(() => {
-      isTransitioning = false;
-    }, TRANSITION_MS);
-  }
+  type TimelineMode = 'internship' | 'work';
 
-  function resetActiveSelection() {
-    document.querySelectorAll('.content[data-id].is-active').forEach((i) => i.classList.remove('is-active'));
-    document.querySelectorAll('.description').forEach((d) => {
-      if (d instanceof HTMLElement) {
+  function attachTimeline(): void {
+    const timeline = document.querySelector<HTMLElement>('.timeline');
+    if (!timeline) return;
+
+    const internships = document.querySelector<HTMLElement>('.internships');
+    const works = document.querySelector<HTMLElement>('.works');
+
+    let isTransitioning = false;
+    function lockTransition(): void {
+      isTransitioning = true;
+      setTimeout(() => {
+        isTransitioning = false;
+      }, TRANSITION_MS);
+    }
+
+    function resetActiveSelection(): void {
+      document.querySelectorAll('.content[data-id].is-active').forEach((i) => i.classList.remove('is-active'));
+      document.querySelectorAll<HTMLElement>('.description').forEach((d) => {
         d.classList.toggle('is-active', d.dataset.id === 'default');
-      }
+      });
+    }
+
+    function switchMode(targetMode: TimelineMode): void {
+      if (isTransitioning) return;
+      if (timeline.classList.contains(`mode-${targetMode}`)) return;
+      const currentMode: TimelineMode = targetMode === 'work' ? 'internship' : 'work';
+      lockTransition();
+      resetActiveSelection();
+      timeline.classList.replace(`mode-${currentMode}`, `mode-${targetMode}`);
+    }
+
+    if (internships) internships.addEventListener('click', () => switchMode('internship'));
+    if (works) works.addEventListener('click', () => switchMode('work'));
+
+    document.querySelectorAll<HTMLElement>('.mobile-toggle button').forEach((btn) => {
+      btn.addEventListener('click', () => {
+        const mode = btn.dataset.mode;
+        if (mode === 'work' || mode === 'internship') {
+          switchMode(mode);
+        }
+      });
     });
-  }
 
-  function switchMode(targetMode: 'internship' | 'work') {
-    if (!timeline || isTransitioning) return;
-    if (timeline.classList.contains(`mode-${targetMode}`)) return;
-    const currentMode = targetMode === 'work' ? 'internship' : 'work';
-    lockTransition();
-    resetActiveSelection();
-    timeline.classList.replace(`mode-${currentMode}`, `mode-${targetMode}`);
-  }
+    function triggerPing(roundEl: Element): void {
+      const halo = document.createElement('div');
+      halo.className = 'round-halo';
+      roundEl.appendChild(halo);
+      setTimeout(() => halo.remove(), TRANSITION_MS);
+    }
 
-  if (internships) internships.addEventListener('click', () => switchMode('internship'));
-  if (works) works.addEventListener('click', () => switchMode('work'));
+    const items = document.querySelectorAll<HTMLElement>('.content[data-id]');
+    const descriptions = document.querySelectorAll<HTMLElement>('.description');
 
-  document.querySelectorAll('.mobile-toggle button').forEach((btn) => {
-    btn.addEventListener('click', () => {
-      if (btn instanceof HTMLElement && (btn.dataset.mode === 'work' || btn.dataset.mode === 'internship')) {
-        switchMode(btn.dataset.mode);
-      }
-    });
-  });
-
-  function triggerPing(roundEl: Element) {
-    const halo = document.createElement('div');
-    halo.className = 'round-halo';
-    roundEl.appendChild(halo);
-    setTimeout(() => halo.remove(), TRANSITION_MS);
-  }
-
-  const items = document.querySelectorAll('.content[data-id]');
-  const descriptions = document.querySelectorAll('.description');
-
-  items.forEach((item) => {
-    item.addEventListener('click', () => {
-      if (item instanceof HTMLElement) {
+    items.forEach((item) => {
+      item.addEventListener('click', () => {
         const id = item.dataset.id;
         descriptions.forEach((d) => {
-          if (d instanceof HTMLElement) {
-            d.classList.toggle('is-active', d.dataset.id === id);
-          }
+          d.classList.toggle('is-active', d.dataset.id === id);
         });
         items.forEach((i) => i.classList.toggle('is-active', i === item));
         const round = item.querySelector('.round');
         if (round) triggerPing(round);
-      }
+      });
     });
-  });
+  }
+
+  document.addEventListener('astro:page-load', attachTimeline);
 </script>
 
 <style>
