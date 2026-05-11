@@ -16,11 +16,11 @@ import cloudImage from '../assets/cloud.png';
       quality={90}
       loading='eager'
     />
-    <div
-      class='hero-text col-start-1 row-start-1 relative z-10 flex flex-col gap-4 p-6 md:p-10 md:-translate-x-[15%] translate-y-25'
-    >
-      <h1 class='text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-display'>Joany Buclon</h1>
-      <h2 class='text-xl md:text-2xl'>Novelist & Software Engineer</h2>
+    <div class='hero-text col-start-1 row-start-1 relative z-10 md:-translate-x-[15%] translate-y-25'>
+      <div class='float-inf flex flex-col gap-4 p-6 md:p-10'>
+        <h1 class='text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-display'>Joany Buclon</h1>
+        <h2 class='text-xl md:text-2xl'>Novelist & Software Engineer</h2>
+      </div>
     </div>
   </section>
 </Layout>
@@ -28,5 +28,45 @@ import cloudImage from '../assets/cloud.png';
 <style>
   .hero-text {
     text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
+  }
+
+  .float-inf {
+    animation: float-inf 28s linear infinite;
+  }
+
+  @keyframes float-inf {
+    0% {
+      transform: translate(6px, 0);
+    }
+    12.5% {
+      transform: translate(3px, 2px);
+    }
+    25% {
+      transform: translate(0, 0);
+    }
+    37.5% {
+      transform: translate(-3px, -2px);
+    }
+    50% {
+      transform: translate(-6px, 0);
+    }
+    62.5% {
+      transform: translate(-3px, 2px);
+    }
+    75% {
+      transform: translate(0, 0);
+    }
+    87.5% {
+      transform: translate(3px, -2px);
+    }
+    100% {
+      transform: translate(6px, 0);
+    }
+  }
+
+  @media (prefers-reduced-motion: reduce) {
+    .float-inf {
+      animation: none;
+    }
   }
 </style>
