@@ -8,7 +8,6 @@ This project uses the following stack:
 
 - [Astro](https://astro.build)
 - [Tailwind](https://tailwindcss.com/)
-- [Svelte](https://svelte.dev)
 - [Docker](https://www.docker.com)
 
 ## Usage
