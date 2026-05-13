@@ -6,6 +6,7 @@ import HeaderComponent from '../components/HeaderComponent.astro';
 import AnchorComponent from '../components/AnchorComponent.astro';
 import BetaComponent from '../components/BetaComponent.astro';
 import PageTransition from '../components/PageTransition.astro';
+import CloudBackground from '../components/CloudBackground.astro';
 const { title } = Astro.props;
 ---
 
@@ -27,6 +28,7 @@ const { title } = Astro.props;
     <title>{title}</title>
   </head>
   <body class='bg-neutral-950 text-white min-h-screen flex flex-col'>
+    <CloudBackground />
     <PageTransition />
 
     <!-- THIS IS A TEMPORARY COMPONENT -->

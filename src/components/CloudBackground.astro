@@ -1,0 +1,149 @@
+<canvas id='cloud-bg' aria-hidden='true' transition:persist></canvas>
+
+<script>
+  function init(): void {
+    const canvas = document.getElementById('cloud-bg') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      canvas.style.display = 'none';
+      return;
+    }
+
+    const gl = canvas.getContext('webgl');
+    if (!gl) return;
+
+    const VS = `
+      attribute vec2 a_position;
+      void main() { gl_Position = vec4(a_position, 0.0, 1.0); }
+    `;
+
+    const FS = `
+      precision mediump float;
+      uniform float u_time;
+      uniform vec2  u_resolution;
+      uniform vec2  u_offset;
+
+      float hash3(vec3 p) {
+        return fract(sin(dot(p, vec3(127.1, 311.7, 74.7))) * 43758.5453);
+      }
+      float noise3(vec3 p) {
+        vec3 i = floor(p);
+        vec3 f = fract(p);
+        vec3 u = f * f * (3.0 - 2.0 * f);
+        return mix(
+          mix(
+            mix(hash3(i),                    hash3(i + vec3(1,0,0)), u.x),
+            mix(hash3(i + vec3(0,1,0)),      hash3(i + vec3(1,1,0)), u.x),
+            u.y
+          ),
+          mix(
+            mix(hash3(i + vec3(0,0,1)),      hash3(i + vec3(1,0,1)), u.x),
+            mix(hash3(i + vec3(0,1,1)),      hash3(i + vec3(1,1,1)), u.x),
+            u.y
+          ),
+          u.z
+        );
+      }
+      float fbm3(vec3 p) {
+        float v = 0.0, a = 0.5;
+        for (int i = 0; i < 5; i++) {
+          v += a * noise3(p);
+          p  = p * 2.0 + vec3(5.2, 1.3, 2.8);
+          a *= 0.5;
+        }
+        return v;
+      }
+
+      const vec3  CLOUD_COLOR   = vec3(0.3, 0.3, 0.3);
+      const float CLOUD_OPACITY = 0.5;
+      const float CLOUD_SPEED   = 0.03;
+      const float CLOUD_EVOLVE  = 0.07;
+
+      void main() {
+        vec2 uv = gl_FragCoord.xy / u_resolution;
+        float aspect = u_resolution.x / u_resolution.y;
+        vec2 p2 = vec2(uv.x * aspect, uv.y) * 2.5 + u_offset;
+        p2.x -= u_time * CLOUD_SPEED;
+        vec3 p = vec3(p2, u_time * CLOUD_EVOLVE);
+
+        vec2 q = vec2(fbm3(p), fbm3(p + vec3(5.2, 1.3, 0.0)));
+        float n = clamp(fbm3(vec3(p.xy + q, p.z)), 0.0, 1.0);
+
+        gl_FragColor = vec4(CLOUD_COLOR * n, n * CLOUD_OPACITY);
+      }
+    `;
+
+    function compileShader(type: number, src: string): WebGLShader | null {
+      if (!gl) return null;
+
+      const shader = gl.createShader(type);
+      if (!shader) return null;
+      gl.shaderSource(shader, src);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    }
+
+    const vs = compileShader(gl.VERTEX_SHADER, VS);
+    const fs = compileShader(gl.FRAGMENT_SHADER, FS);
+    if (!vs || !fs) return;
+
+    const program = gl.createProgram();
+    if (!program) return;
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+    gl.useProgram(program);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+
+    const aPos = gl.getAttribLocation(program, 'a_position');
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    const uTime = gl.getUniformLocation(program, 'u_time');
+    const uRes = gl.getUniformLocation(program, 'u_resolution');
+    const uOffset = gl.getUniformLocation(program, 'u_offset');
+    gl.uniform2f(uOffset, Math.random() * 1000, Math.random() * 1000);
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+
+    function resize(): void {
+      canvas!.width = Math.floor(window.innerWidth / 2);
+      canvas!.height = Math.floor(window.innerHeight / 2);
+      gl!.viewport(0, 0, canvas!.width, canvas!.height);
+      gl!.uniform2f(uRes, canvas!.width, canvas!.height);
+    }
+    resize();
+    new ResizeObserver(resize).observe(document.documentElement);
+
+    const startTime = performance.now();
+    function draw(): void {
+      gl!.uniform1f(uTime, (performance.now() - startTime) / 1000);
+      gl!.drawArrays(gl!.TRIANGLES, 0, 6);
+      requestAnimationFrame(draw);
+    }
+    draw();
+  }
+
+  init();
+</script>
+
+<style>
+  #cloud-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -1;
+    pointer-events: none;
+  }
+</style>
