@@ -127,12 +127,19 @@
     new ResizeObserver(resize).observe(document.documentElement);
 
     const startTime = performance.now();
+    let rafId = 0;
+
     function draw(): void {
       gl!.clear(gl!.COLOR_BUFFER_BIT);
       gl!.uniform1f(uTime, (performance.now() - startTime) / 1000);
       gl!.drawArrays(gl!.TRIANGLES, 0, 6);
-      requestAnimationFrame(draw);
+      rafId = requestAnimationFrame(draw);
     }
+
+    document.addEventListener('astro:before-preparation', () => cancelAnimationFrame(rafId));
+    document.addEventListener('astro:after-swap', () => {
+      rafId = requestAnimationFrame(draw);
+    });
     draw();
   }
 
