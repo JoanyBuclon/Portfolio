@@ -1,72 +1,10 @@
 ---
-import { Image } from 'astro:assets';
 import Layout from '../layouts/Layout.astro';
-import cloudImage from '../assets/cloud.png';
 ---
 
 <Layout title='Joany Buclon'>
-  <section class='hero relative w-full min-h-screen overflow-hidden grid place-items-center'>
-    <Image
-      src={cloudImage}
-      alt=''
-      class='col-start-1 row-start-1 w-[90vw] md:w-[65vw] max-w-275 h-auto md:translate-x-[17%] brightness-[0.85] pointer-events-none'
-      widths={[600, 900, 1200]}
-      sizes='(max-width: 768px) 80vw, 55vw'
-      format='webp'
-      quality={90}
-      loading='eager'
-    />
-    <div class='hero-text col-start-1 row-start-1 relative z-10 md:-translate-x-[15%] translate-y-25'>
-      <div class='float-inf flex flex-col gap-4 p-6 md:p-10'>
-        <h1 class='text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-display'>Joany Buclon</h1>
-        <h2 class='text-xl md:text-2xl'>Novelist & Software Engineer</h2>
-      </div>
-    </div>
-  </section>
+  <div class='flex flex-col gap-4 p-6 md:p-10 overflow-visible'>
+    <h1 class='text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-display'>Joany Buclon</h1>
+    <h2 class='text-xl md:text-2xl'>Novelist & Software Engineer</h2>
+  </div>
 </Layout>
-
-<style>
-  .hero-text {
-    text-shadow: 0 2px 12px rgba(0, 0, 0, 0.7);
-  }
-
-  .float-inf {
-    animation: float-inf 28s linear infinite;
-  }
-
-  @keyframes float-inf {
-    0% {
-      transform: translate(6px, 0);
-    }
-    12.5% {
-      transform: translate(3px, 2px);
-    }
-    25% {
-      transform: translate(0, 0);
-    }
-    37.5% {
-      transform: translate(-3px, -2px);
-    }
-    50% {
-      transform: translate(-6px, 0);
-    }
-    62.5% {
-      transform: translate(-3px, 2px);
-    }
-    75% {
-      transform: translate(0, 0);
-    }
-    87.5% {
-      transform: translate(3px, -2px);
-    }
-    100% {
-      transform: translate(6px, 0);
-    }
-  }
-
-  @media (prefers-reduced-motion: reduce) {
-    .float-inf {
-      animation: none;
-    }
-  }
-</style>
