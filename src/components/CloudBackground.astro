@@ -128,6 +128,7 @@
 
     const startTime = performance.now();
     let rafId = 0;
+    let shouldRun = false;
 
     function draw(): void {
       gl!.clear(gl!.COLOR_BUFFER_BIT);
@@ -136,14 +137,28 @@
       rafId = requestAnimationFrame(draw);
     }
 
-    document.addEventListener('astro:before-preparation', () => cancelAnimationFrame(rafId));
-    document.addEventListener('astro:after-swap', () => {
-      rafId = requestAnimationFrame(draw);
+    function startDraw(): void {
+      shouldRun = true;
+      if (!document.hidden) rafId = requestAnimationFrame(draw);
+    }
+
+    function stopDraw(): void {
+      shouldRun = false;
+      cancelAnimationFrame(rafId);
+    }
+
+    document.addEventListener('astro:before-preparation', stopDraw);
+    document.addEventListener('astro:after-swap', startDraw);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) cancelAnimationFrame(rafId);
+      else if (shouldRun) rafId = requestAnimationFrame(draw);
     });
-    draw();
+
+    startDraw();
   }
 
-  init();
+  const scheduleInit = (window as any).requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 200));
+  scheduleInit(init);
 </script>
 
 <style>

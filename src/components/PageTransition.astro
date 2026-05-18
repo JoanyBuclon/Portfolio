@@ -1,11 +1,8 @@
 ---
-import { generateLettersHtml } from '../lib/page-transition';
-
-const initialLettersHtml = generateLettersHtml();
 ---
 
 <div class='page-transition' aria-hidden='true' transition:persist>
-  <div class='letters font-display' set:html={initialLettersHtml} />
+  <div class='letters font-display' />
 </div>
 
 <script>
@@ -16,6 +13,8 @@ const initialLettersHtml = generateLettersHtml();
   }
 
   let isFirstLoad = true;
+
+  setTimeout(regenerateLetters, 0);
 
   function regenerateLetters(): void {
     const container = document.querySelector<HTMLElement>('.page-transition .letters');

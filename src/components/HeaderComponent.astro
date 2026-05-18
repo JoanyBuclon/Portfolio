@@ -42,6 +42,7 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
   }
 
   document.addEventListener('astro:page-load', attachBurger);
+  attachBurger();
 </script>
 
 <style>
