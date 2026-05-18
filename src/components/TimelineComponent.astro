@@ -132,7 +132,7 @@ import { internships, works } from '../data/timeline';
 
     function switchMode(targetMode: TimelineMode): void {
       if (isTransitioning) return;
-      if (timeline.classList.contains(`mode-${targetMode}`)) return;
+      if (!timeline || timeline.classList.contains(`mode-${targetMode}`)) return;
       const currentMode: TimelineMode = targetMode === 'work' ? 'internship' : 'work';
       lockTransition();
       resetActiveSelection();
@@ -363,7 +363,7 @@ import { internships, works } from '../data/timeline';
       align-items: stretch;
     }
     .timeline > .flex-row {
-      flex-direction: column;
+      flex-direction: column-reverse;
     }
 
     .mobile-toggle {
