@@ -7,7 +7,7 @@ import { internships, works } from '../data/timeline';
     <button
       type='button'
       data-mode='internship'
-      class='border-2 border-emerald-400 text-emerald-400 px-4 py-2 rounded-full cursor-pointer'>education</button
+      class='border-2 border-sky-400 text-sky-400 px-4 py-2 rounded-full cursor-pointer'>education</button
     >
     <button
       type='button'
@@ -16,27 +16,27 @@ import { internships, works } from '../data/timeline';
     >
   </div>
   <div class='flex flex-row'>
-    <div class='line-edge bg-emerald-400'></div>
-    <div class='content internships mode-work cursor-pointer text-emerald-400 hover:text-emerald-300'>
+    <div class='line-edge bg-sky-400'></div>
+    <div class='content internships mode-work cursor-pointer text-sky-400 hover:text-sky-300'>
       <div class='main'>
         <h3 class='text-2xl'>education</h3>
         <p>click to expand</p>
       </div>
       <div class='elements'>
-        <div class='round border-emerald-400 border-2'></div>
-        <div class='line bg-emerald-400'></div>
+        <div class='round border-sky-400 border-2'></div>
+        <div class='line bg-sky-400'></div>
       </div>
     </div>
     {
       internships.map((ex) => (
-        <div class='content mode-internship cursor-pointer text-emerald-400 hover:text-emerald-300' data-id={ex.id}>
+        <div class='content mode-internship cursor-pointer text-sky-400 hover:text-sky-300' data-id={ex.id}>
           <div class='main'>
             <h3 class='text-2xl'>{ex.title}</h3>
             <p>{ex.subtitle}</p>
           </div>
           <div class='elements'>
-            <div class='round border-emerald-400 border-2' />
-            <div class='line bg-emerald-400' />
+            <div class='round border-sky-400 border-2' />
+            <div class='line bg-sky-400' />
             {ex.year && <span class='year'>{ex.year}</span>}
           </div>
           <div class='inline-description whitespace-pre-line'>
@@ -378,7 +378,7 @@ import { internships, works } from '../data/timeline';
         color 0.2s;
     }
     .timeline.mode-internship .mobile-toggle button[data-mode='internship'] {
-      background-color: rgb(52 211 153);
+      background-color: rgb(56 189 248);
       color: rgb(0 0 0);
     }
     .timeline.mode-work .mobile-toggle button[data-mode='work'] {

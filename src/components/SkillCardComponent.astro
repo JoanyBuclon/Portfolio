@@ -15,7 +15,7 @@ import { pillars } from '../data/skills';
               <h4 class='card-title text-lg font-semibold mb-2'>{card.title}</h4>
               <ul class='flex flex-wrap gap-1'>
                 {card.skills.map((skill) => (
-                  <li class='skill text-sm px-2 py-0.5 border border-white rounded'>{skill}</li>
+                  <li class='skill text-sm px-2 py-0.5 border rounded-full'>{skill}</li>
                 ))}
               </ul>
             </article>
@@ -31,13 +31,18 @@ import { pillars } from '../data/skills';
     --pillar-color: rgb(96 165 250); /* blue-400 */
   }
   .pillar[data-pillar='operate'] {
-    --pillar-color: rgb(52 211 153); /* emerald-400 */
+    --pillar-color: rgb(56 189 248); /* sky-400 */
   }
   .pillar[data-pillar='explore'] {
-    --pillar-color: rgb(167 139 250); /* violet-400 */
+    --pillar-color: rgb(129 140 248); /* indigo-400 */
   }
 
   .pillar-title {
+    color: var(--pillar-color);
+  }
+
+  .skill {
+    border-color: var(--pillar-color);
     color: var(--pillar-color);
   }
 
