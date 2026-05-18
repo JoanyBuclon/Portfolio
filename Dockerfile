@@ -1,10 +1,17 @@
 # Stage 1 — build
 FROM node:22-alpine AS builder
 RUN corepack enable
+RUN apk add --no-cache python3 py3-pip && \
+    pip3 install fonttools brotli --break-system-packages
 WORKDIR /app
 COPY package.json pnpm-lock.yaml pnpm-workspace.yaml ./
 RUN pnpm install --frozen-lockfile
 COPY . .
+RUN UNICODES=$(node scripts/collect-chars.mjs --range-only) && \
+    for f in src/assets/fonts/*.woff2; do \
+      pyftsubset "$f" --unicodes="$UNICODES" --flavor=woff2 --output-file="${f}.tmp" && \
+      mv "${f}.tmp" "$f"; \
+    done
 RUN pnpm run build
 
 # Stage 2 — serve
