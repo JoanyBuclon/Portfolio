@@ -39,11 +39,6 @@ export default defineConfig({
             style: 'normal',
             src: ['./src/assets/fonts/PPNeueMontreal-Regular.woff2']
           },
-          {
-            weight: 600,
-            style: 'normal',
-            src: ['./src/assets/fonts/PPNeueMontreal-Semibold.woff2']
-          }
         ]
       }
     }
