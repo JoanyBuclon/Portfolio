@@ -4,7 +4,6 @@ import { Font } from 'astro:assets';
 import { ClientRouter } from 'astro:transitions';
 import HeaderComponent from '../components/HeaderComponent.astro';
 import AnchorComponent from '../components/AnchorComponent.astro';
-import BetaComponent from '../components/BetaComponent.astro';
 import PageTransition from '../components/PageTransition.astro';
 import CloudBackground from '../components/CloudBackground.astro';
 import RainBackground from '../components/RainBackground.astro';
@@ -30,19 +29,18 @@ const { title } = Astro.props;
     <script is:inline>
       window.__weather = localStorage.getItem('weather') || 'off';
       if (window.__weather === 'storm') document.documentElement.classList.add('storm');
-      if (window.__weather === 'snow')  document.documentElement.classList.add('snow');
+      if (window.__weather === 'snow') document.documentElement.classList.add('snow');
     </script>
   </head>
   <body class='bg-neutral-950 text-white min-h-screen flex flex-col'>
     <CloudBackground />
     <RainBackground />
-    <PageTransition />
 
-    <!-- THIS IS A TEMPORARY COMPONENT -->
-    <BetaComponent />
+    <PageTransition />
 
     <HeaderComponent />
     <AnchorComponent />
+
     <main class='flex flex-1 items-center justify-center'>
       <slot />
     </main>

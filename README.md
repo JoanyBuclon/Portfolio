@@ -1,6 +1,6 @@
 # Portfolio v2.x
 
-My personal portfolio accessible [here](https://beta.joanybuclon.com) (note that this is currently a beta).
+My personal portfolio accessible [here](https://joanybuclon.com).
 
 ## Built With
 
@@ -8,6 +8,7 @@ This project uses the following stack:
 
 - [Astro](https://astro.build)
 - [Tailwind](https://tailwindcss.com/)
+- [WebGL](https://developer.mozilla.org/fr/docs/Web/API/WebGL_API)
 - [Docker](https://www.docker.com)
 
 ## Usage
