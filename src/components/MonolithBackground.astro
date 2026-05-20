@@ -1,0 +1,246 @@
+<canvas id='monolith-bg' aria-hidden='true'></canvas>
+
+<script>
+  function init(): void {
+    const canvas = document.getElementById('monolith-bg') as HTMLCanvasElement | null;
+    if (!canvas) return;
+
+    if (window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+      canvas.style.display = 'none';
+      return;
+    }
+
+    const gl = canvas.getContext('webgl', { alpha: true, premultipliedAlpha: false });
+    if (!gl) return;
+
+    const VS = `
+      attribute vec2 a_position;
+      void main() { gl_Position = vec4(a_position, 0.0, 1.0); }
+    `;
+
+    const FS = `
+      precision mediump float;
+      uniform float u_time;
+      uniform float u_storm;
+      uniform vec2  u_resolution;
+
+      vec2 rayBox(vec3 ro, vec3 rd, vec3 bmin, vec3 bmax) {
+        vec3 inv = 1.0 / rd;
+        vec3 t0  = (bmin - ro) * inv;
+        vec3 t1  = (bmax - ro) * inv;
+        vec3 tlo = min(t0, t1);
+        vec3 thi = max(t0, t1);
+        return vec2(
+          max(max(tlo.x, tlo.y), tlo.z),
+          min(min(thi.x, thi.y), thi.z)
+        );
+      }
+
+      vec3 boxNormal(vec3 p, vec3 bmin, vec3 bmax) {
+        vec3 c = (bmin + bmax) * 0.5;
+        vec3 h = (bmax - bmin) * 0.5;
+        vec3 q = (p - c) / h;
+        float ax = abs(q.x), ay = abs(q.y), az = abs(q.z);
+        if (ax >= ay && ax >= az) return vec3(sign(q.x), 0.0, 0.0);
+        if (ay >= ax && ay >= az) return vec3(0.0, sign(q.y), 0.0);
+        return vec3(0.0, 0.0, sign(q.z));
+      }
+
+      float rhash(vec2 p) {
+        return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
+      }
+
+      float rainDroplets(vec2 uv, float time) {
+        float GRID = 36.0;
+        vec2  cell  = floor(uv * GRID);
+        vec2  fc    = fract(uv * GRID) - 0.5;
+        vec2  pos   = (vec2(rhash(cell), rhash(cell + 17.3)) - 0.5) * 0.55;
+        float freq  = 2.0 + rhash(cell + 31.7) * 6.0;
+        float phase = rhash(cell + 53.1);
+        float t     = fract(time * freq + phase);
+        float flash = smoothstep(0.0, 0.03, t) * smoothstep(0.10, 0.03, t);
+        return flash * smoothstep(0.04, 0.0, length(fc - pos));
+      }
+
+      void main() {
+        float aspect = u_resolution.x / u_resolution.y;
+        vec2 uv = (gl_FragCoord.xy / u_resolution) * 2.0 - 1.0;
+        uv.x *= aspect;
+
+        // Responsive: t=0 portrait (mobile), t=1 landscape (desktop)
+        float resp = clamp((aspect - 0.56) / (1.78 - 0.56), 0.0, 1.0);
+
+        // Camera orbits very slowly around Y axis (±1.7°)
+        float angle = sin(u_time * 0.04) * 0.03;
+        float ca = cos(angle), sa = sin(angle);
+        vec3 baseRo = vec3(mix(0.8, 2.5, resp), 0.2, mix(2.5, 4.0, resp));
+        vec3 ro  = vec3(baseRo.x * ca + baseRo.z * sa, baseRo.y, -baseRo.x * sa + baseRo.z * ca);
+        vec3 fwd = normalize(vec3(0.0, 0.5, 0.0) - ro);
+        vec3 rgt = normalize(cross(vec3(0.0, 1.0, 0.0), fwd));
+        vec3 up  = cross(fwd, rgt);
+        vec3 rd  = normalize(fwd + uv.x * rgt * 0.65 + uv.y * up * 0.65);
+
+        // Bottom off-screen, top at ~2/3 screen height (responsive)
+        float mw   = mix(0.52, 2.0, resp);
+        float mtop = mix(0.8,  1.6, resp);
+        vec3 BMIN = vec3(-mw, -5.0, -0.35);
+        vec3 BMAX = vec3( mw, mtop,  0.35);
+
+        vec2 tbox = rayBox(ro, rd, BMIN, BMAX);
+        if (tbox.x > tbox.y || tbox.y < 0.0) {
+          gl_FragColor = vec4(0.0);
+          return;
+        }
+
+        vec3 hit = ro + rd * max(tbox.x, 0.0);
+        vec3 N   = boxNormal(hit, BMIN, BMAX);
+        vec3 V   = -rd;
+
+        vec3 keyDir  = normalize(vec3(-0.4, 1.8,  0.5));
+        vec3 fillDir = normalize(vec3( 1.0, 0.3,  0.7));
+
+        float dKey  = max(dot(N, keyDir),  0.0);
+        float dFill = max(dot(N, fillDir), 0.0) * 0.12;
+        float amb   = 0.06;
+
+        // Tight specular for glassy surface
+        float spec = pow(max(dot(V, reflect(-keyDir, N)), 0.0), 96.0) * 0.55;
+
+        // Near-black, cool blue-grey tint
+        vec3 base  = vec3(0.018, 0.018, 0.026);
+        vec3 color = base * (amb + dKey * 0.9 + dFill)
+                   + vec3(0.07, 0.10, 0.18) * spec;
+
+        // Storm: darken and cool-shift the whole surface (wet look)
+        color = mix(color, color * vec3(0.65, 0.75, 1.05), u_storm * 0.7);
+
+        float stormRain = 0.0;
+        if (abs(N.z) > 0.5) {
+          vec2 faceUV = vec2(
+            (hit.x - BMIN.x) / (BMAX.x - BMIN.x),
+            (hit.y - BMIN.y) / (BMAX.y - BMIN.y)
+          );
+          stormRain = rainDroplets(faceUV, u_time);
+        } else if (abs(N.x) > 0.5) {
+          vec2 faceUV = vec2(
+            (hit.z - BMIN.z) / (BMAX.z - BMIN.z),
+            (hit.y - BMIN.y) / (BMAX.y - BMIN.y)
+          );
+          stormRain = rainDroplets(faceUV, u_time * 1.13);
+        } else if (N.y > 0.5) {
+          vec2 faceUV = vec2(
+            (hit.x - BMIN.x) / (BMAX.x - BMIN.x),
+            (hit.z - BMIN.z) / (BMAX.z - BMIN.z)
+          );
+          stormRain = rainDroplets(faceUV, u_time * 0.97);
+        }
+        color += vec3(0.60, 0.78, 1.00) * stormRain * u_storm;
+
+        gl_FragColor = vec4(color, 0.90);
+      }
+    `;
+
+    function compileShader(type: number, src: string): WebGLShader | null {
+      if (!gl) return null;
+      const shader = gl.createShader(type);
+      if (!shader) return null;
+      gl.shaderSource(shader, src);
+      gl.compileShader(shader);
+      if (!gl.getShaderParameter(shader, gl.COMPILE_STATUS)) {
+        gl.deleteShader(shader);
+        return null;
+      }
+      return shader;
+    }
+
+    const vs = compileShader(gl.VERTEX_SHADER, VS);
+    const fs = compileShader(gl.FRAGMENT_SHADER, FS);
+    if (!vs || !fs) return;
+
+    const program = gl.createProgram();
+    if (!program) return;
+    gl.attachShader(program, vs);
+    gl.attachShader(program, fs);
+    gl.linkProgram(program);
+    if (!gl.getProgramParameter(program, gl.LINK_STATUS)) return;
+    gl.useProgram(program);
+
+    const buf = gl.createBuffer();
+    gl.bindBuffer(gl.ARRAY_BUFFER, buf);
+    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+
+    const aPos = gl.getAttribLocation(program, 'a_position');
+    gl.enableVertexAttribArray(aPos);
+    gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
+
+    const uTime = gl.getUniformLocation(program, 'u_time');
+    const uStorm = gl.getUniformLocation(program, 'u_storm');
+    const uRes  = gl.getUniformLocation(program, 'u_resolution');
+
+    let stormTarget = (window as any).__storm ? 1.0 : 0.0;
+    let stormValue = stormTarget;
+    gl.uniform1f(uStorm, stormValue);
+    document.addEventListener('storm:toggle', (e: Event) => {
+      stormTarget = (e as CustomEvent<{ active: boolean }>).detail.active ? 1.0 : 0.0;
+    });
+
+    gl.enable(gl.BLEND);
+    gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
+    gl.clearColor(0, 0, 0, 0);
+
+    function resize(): void {
+      canvas!.width  = window.innerWidth;
+      canvas!.height = window.innerHeight;
+      gl!.viewport(0, 0, canvas!.width, canvas!.height);
+      gl!.uniform2f(uRes, canvas!.width, canvas!.height);
+    }
+    resize();
+    new ResizeObserver(resize).observe(document.documentElement);
+
+    const startTime = performance.now();
+    let rafId = 0;
+    let shouldRun = false;
+
+    function draw(): void {
+      stormValue += (stormTarget - stormValue) * 0.02;
+      gl!.uniform1f(uStorm, stormValue);
+      gl!.clear(gl!.COLOR_BUFFER_BIT);
+      gl!.uniform1f(uTime, (performance.now() - startTime) / 1000);
+      gl!.drawArrays(gl!.TRIANGLES, 0, 6);
+      rafId = requestAnimationFrame(draw);
+    }
+
+    function startDraw(): void {
+      shouldRun = true;
+      if (!document.hidden) rafId = requestAnimationFrame(draw);
+    }
+
+    function stopDraw(): void {
+      shouldRun = false;
+      cancelAnimationFrame(rafId);
+    }
+
+    document.addEventListener('astro:before-preparation', stopDraw);
+    document.addEventListener('astro:after-swap', startDraw);
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) cancelAnimationFrame(rafId);
+      else if (shouldRun) rafId = requestAnimationFrame(draw);
+    });
+
+    startDraw();
+  }
+
+  const scheduleInit = (window as any).requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 200));
+  scheduleInit(init);
+</script>
+
+<style>
+  #monolith-bg {
+    position: fixed;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    z-index: -2;
+    pointer-events: none;
+  }
+</style>
