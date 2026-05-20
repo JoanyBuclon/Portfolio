@@ -1,7 +1,10 @@
 <canvas id='cloud-bg' aria-hidden='true' transition:persist></canvas>
 
 <script>
+  let initialized = false;
   function init(): void {
+    if (initialized) return;
+    initialized = true;
     const canvas = document.getElementById('cloud-bg') as HTMLCanvasElement | null;
     if (!canvas) return;
 
