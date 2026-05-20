@@ -19,15 +19,22 @@ import Layout from '../layouts/Layout.astro';
     h1.addEventListener('pointerdown', () => {
       clearTimeout(t);
       n++;
-      t = setTimeout(() => {
-        n = 0;
-      }, 400);
+      t = setTimeout(() => { n = 0; }, 400);
       if (n >= 5) {
         n = 0;
-        const on = document.documentElement.classList.toggle('storm');
-        (window as any).__storm = on;
-        localStorage.setItem('storm', on ? '1' : '0');
-        document.dispatchEvent(new CustomEvent('storm:toggle', { detail: { active: on } }));
+        const current = ((window as any).__weather as string) || 'off';
+        const isDecember = new Date().getMonth() === 11;
+        const snowChance = isDecember ? 0.9 : 0.1;
+        const newMode = current !== 'off' ? 'off' : (Math.random() < snowChance ? 'snow' : 'storm');
+        (window as any).__weather = newMode;
+        if (newMode === 'off') {
+          localStorage.removeItem('weather');
+        } else {
+          localStorage.setItem('weather', newMode);
+        }
+        document.documentElement.classList.toggle('storm', newMode === 'storm');
+        document.documentElement.classList.toggle('snow',  newMode === 'snow');
+        document.dispatchEvent(new CustomEvent('weather:change', { detail: { mode: newMode } }));
       }
     });
   }

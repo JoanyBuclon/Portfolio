@@ -19,18 +19,16 @@
       precision mediump float;
       uniform float u_time;
       uniform float u_storm;
+      uniform float u_snow;
       uniform vec2  u_resolution;
 
       float hash21(vec2 p) {
         return fract(sin(dot(p, vec2(127.1, 311.7))) * 43758.5453);
       }
 
-      // uv.y = 0 at top, 1 at bottom (pre-flipped by caller)
-      // Returns brightness [0,1] of a rain streak at this pixel
+      // ── Rain ────────────────────────────────────────────────────────────────
       float rainLayer(vec2 uv, float cols, float speed) {
-        // Wind tilt: drops lean slightly to the right
         uv.x -= uv.y * 0.18;
-
         float scaledX = uv.x * cols;
         float colId   = floor(scaledX);
         float cellX   = fract(scaledX);
@@ -44,41 +42,87 @@
         float dropSpeed = speed * (0.6 + rSpd * 0.8);
         float dropLen   = 0.04 + rLen * 0.07;
 
-        // s sweeps toward 0 as time advances; drop occupies s in [0, dropLen]
-        // head (bright) arrives first, tail (dim) follows
         float s      = fract(uv.y - u_time * dropSpeed - rPhase * 3.0);
         float inDrop = step(0.0, s) * step(s, dropLen);
         float bri    = inDrop * (s / dropLen);
-
-        // Sparsity: ~25% of columns invisible, rest graduated
         bri *= smoothstep(0.2, 0.5, rActive);
 
-        // Sub-pixel thin streak, randomly offset within its column cell
         float cx     = rCx * 0.6 + 0.2;
         float xShape = 1.0 - smoothstep(0.0, 0.06, abs(cellX - cx));
 
         return bri * xShape;
       }
 
+      // ── Snow ────────────────────────────────────────────────────────────────
+      // Evaluates one flake from cellId, compared against localUV
+      float snowDot(vec2 cellId, vec2 localUV, float seed, float speed) {
+        float px     = hash21(cellId + vec2(seed,       0.50));
+        float py     = hash21(cellId + vec2(seed + 1.0, 0.50));
+        float psize  = 0.5 + hash21(cellId + vec2(seed + 2.0, 0.50)) * 0.2;
+        float active = hash21(cellId + vec2(seed + 3.0, 0.50));
+        float phase  = hash21(cellId + vec2(seed + 4.0, 0.50));
+        float spd    = speed * (0.4 + hash21(cellId + vec2(seed + 5.0, 0.50)) * 0.6);
+
+        // Gravity: blend linear + quadratic so flakes always move but accelerate downward
+        float t      = fract(u_time * spd + phase * 5.0);
+        float fallY  = fract(py + 0.4 * t + 0.6 * t * t);
+        float dist   = length(localUV - vec2(px, fallY));
+        float r      = 0.03 * psize;
+        float bri    = smoothstep(r, r * 0.2, dist);
+        return bri * smoothstep(0.25, 0.55, active);
+      }
+
+      float snowLayer(vec2 uv, float density, float speed, float seed) {
+        // Gentle horizontal sway — different phase per layer (seed offset)
+        uv.x += sin(u_time * 0.35 + seed * 6.28 + uv.y * 2.0) * 0.04;
+
+        vec2 scaled = uv * density;
+        vec2 cellId = floor(scaled);
+        vec2 local  = fract(scaled);
+
+        float bri = 0.0;
+        // 3x3 neighborhood so flakes crossing cell boundaries render fully
+        for (int dy = -1; dy <= 1; dy++) {
+          for (int dx = -1; dx <= 1; dx++) {
+            vec2 off = vec2(float(dx), float(dy));
+            bri = max(bri, snowDot(cellId + off, local - off, seed, speed));
+          }
+        }
+        return bri;
+      }
+
+      // ── Main ────────────────────────────────────────────────────────────────
       void main() {
         vec2 uv = gl_FragCoord.xy / u_resolution;
         uv.y = 1.0 - uv.y;
 
-        // Scale column count so drop width stays ~2px regardless of screen size
-        // (reference: 1440px wide; min 25% for very small screens)
+        // Rain
         float density = clamp(u_resolution.x / 1440.0, 0.25, 1.0);
-
-        // 3 depth layers: near (fast/dense), mid, far (slow/sparse)
         float r = 0.0;
         r += rainLayer(uv,                            90.0 * density, 0.72) * 1.00;
         r += rainLayer(uv * 0.65 + vec2(0.41, 0.17), 60.0 * density, 0.50) * 0.55;
         r += rainLayer(uv * 0.45 + vec2(0.83, 0.62), 36.0 * density, 0.32) * 0.28;
-
         r = clamp(r, 0.0, 1.0) * u_storm;
 
-        // Cold blue-white tint
-        vec3 col = vec3(0.60, 0.78, 1.00);
-        gl_FragColor = vec4(col, r * 0.55);
+        // Snow (3 depth layers, slow)
+        float s = 0.0;
+        s = max(s, snowLayer(uv,                             12.0, 0.11, 0.00));
+        s = max(s, snowLayer(uv * 0.70 + vec2(0.31, 0.47),   8.0, 0.07, 7.30));
+        s = max(s, snowLayer(uv * 0.45 + vec2(0.67, 0.23),   5.0, 0.045, 3.70));
+        s = clamp(s, 0.0, 1.0) * u_snow;
+
+        // Combine — modes are exclusive but lerp gracefully during transition
+        float rainAlpha  = r * 0.55;
+        float snowAlpha  = s * 0.85;
+        float totalAlpha = min(rainAlpha + snowAlpha, 1.0);
+
+        vec3 rainCol = vec3(0.60, 0.78, 1.00);
+        vec3 snowCol = vec3(0.90, 0.95, 1.00);
+        vec3 col = totalAlpha > 0.001
+          ? (rainCol * rainAlpha + snowCol * snowAlpha) / totalAlpha
+          : rainCol;
+
+        gl_FragColor = vec4(col, totalAlpha);
       }
     `;
 
@@ -117,13 +161,21 @@
 
     const uTime  = gl.getUniformLocation(program, 'u_time');
     const uStorm = gl.getUniformLocation(program, 'u_storm');
+    const uSnow  = gl.getUniformLocation(program, 'u_snow');
     const uRes   = gl.getUniformLocation(program, 'u_resolution');
 
-    let stormTarget = (window as any).__storm ? 1.0 : 0.0;
+    const initMode = ((window as any).__weather as string) || 'off';
+    let stormTarget = initMode === 'storm' ? 1.0 : 0.0;
     let stormValue  = stormTarget;
+    let snowTarget  = initMode === 'snow'  ? 1.0 : 0.0;
+    let snowValue   = snowTarget;
+
     gl.uniform1f(uStorm, stormValue);
-    document.addEventListener('storm:toggle', (e: Event) => {
-      stormTarget = (e as CustomEvent<{ active: boolean }>).detail.active ? 1.0 : 0.0;
+    gl.uniform1f(uSnow,  snowValue);
+    document.addEventListener('weather:change', (e: Event) => {
+      const mode = (e as CustomEvent<{ mode: string }>).detail.mode;
+      stormTarget = mode === 'storm' ? 1.0 : 0.0;
+      snowTarget  = mode === 'snow'  ? 1.0 : 0.0;
     });
 
     gl.enable(gl.BLEND);
@@ -145,7 +197,9 @@
 
     function draw(): void {
       stormValue += (stormTarget - stormValue) * 0.02;
+      snowValue  += (snowTarget  - snowValue)  * 0.02;
       gl!.uniform1f(uStorm, stormValue);
+      gl!.uniform1f(uSnow,  snowValue);
       gl!.clear(gl!.COLOR_BUFFER_BIT);
       gl!.uniform1f(uTime, (performance.now() - startTime) / 1000);
       gl!.drawArrays(gl!.TRIANGLES, 0, 6);

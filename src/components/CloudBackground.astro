@@ -22,6 +22,7 @@
       precision mediump float;
       uniform float u_time;
       uniform float u_storm;
+      uniform float u_snow;
       uniform float u_flash;
       uniform float u_cloud_x;
       uniform float u_cloud_z;
@@ -72,15 +73,16 @@
         vec2 q = vec2(fbm3(p), fbm3(p + vec3(5.2, 1.3, 0.0)));
         float n = clamp(fbm3(vec3(p.xy + q, p.z)), 0.0, 1.0);
 
-        vec3  activeColor   = mix(CLOUD_COLOR, vec3(0.22, 0.25, 0.35), u_storm);
-        float activeOpacity = mix(CLOUD_OPACITY, 0.75, u_storm);
+        // Both storm and snow share the same blue-gray tint
+        float tintAmt = max(u_storm, u_snow);
+        vec3  activeColor   = mix(CLOUD_COLOR, vec3(0.22, 0.25, 0.35), tintAmt);
+        float activeOpacity = CLOUD_OPACITY + u_storm * 0.25 + u_snow * 0.15;
 
-        // Lightning: clouds burst to near-white, opacity spikes
-        vec3  litColor = vec3(0.88, 0.93, 1.00);
+        // Lightning: only in storm mode
+        vec3  litColor     = vec3(0.88, 0.93, 1.00);
         vec3  finalColor   = mix(activeColor,   litColor, u_flash);
         float finalOpacity = mix(activeOpacity, 1.0,      u_flash);
-        // Faint ambient so even thin sky areas catch the light
-        float ambient = u_flash * 0.10;
+        float ambient      = u_flash * 0.10;
         gl_FragColor = vec4(
           finalColor * n + litColor * ambient,
           clamp(n * finalOpacity + ambient, 0.0, 1.0)
@@ -90,7 +92,6 @@
 
     function compileShader(type: number, src: string): WebGLShader | null {
       if (!gl) return null;
-
       const shader = gl.createShader(type);
       if (!shader) return null;
       gl.shaderSource(shader, src);
@@ -124,6 +125,7 @@
 
     const uTime   = gl.getUniformLocation(program, 'u_time');
     const uStorm  = gl.getUniformLocation(program, 'u_storm');
+    const uSnow   = gl.getUniformLocation(program, 'u_snow');
     const uFlash  = gl.getUniformLocation(program, 'u_flash');
     const uCloudX = gl.getUniformLocation(program, 'u_cloud_x');
     const uCloudZ = gl.getUniformLocation(program, 'u_cloud_z');
@@ -131,33 +133,32 @@
     const uOffset = gl.getUniformLocation(program, 'u_offset');
     gl.uniform2f(uOffset, Math.random() * 1000, Math.random() * 1000);
 
-    let stormTarget = (window as any).__storm ? 1.0 : 0.0;
+    const initMode = ((window as any).__weather as string) || 'off';
+    let stormTarget = initMode === 'storm' ? 1.0 : 0.0;
     let stormValue  = stormTarget;
+    let snowTarget  = initMode === 'snow'  ? 1.0 : 0.0;
+    let snowValue   = snowTarget;
     let cloudX = 0;
     let cloudZ = 0;
     let lastTs = -1;
 
-    // Lightning flash state
-    let flashBri     = 0;
-    let flashDecay   = 0;
-    let nextFlashAt  = -1; // -1 = not scheduled
+    // Lightning flash state (storm only)
+    let flashBri    = 0;
+    let flashDecay  = 0;
+    let nextFlashAt = -1;
 
     function triggerFlash(): void {
       const rnd = Math.random();
       if (rnd < 0.30) {
-        // Slow large flash — whole sky
         flashBri   = 0.55 + Math.random() * 0.45;
         flashDecay = 2.0  + Math.random() * 2.0;
       } else if (rnd < 0.65) {
-        // Medium flash
         flashBri   = 0.70 + Math.random() * 0.30;
         flashDecay = 5.0  + Math.random() * 5.0;
       } else {
-        // Fast sharp flash
         flashBri   = 0.80 + Math.random() * 0.20;
         flashDecay = 12.0 + Math.random() * 10.0;
       }
-      // 35 % chance of double flash (echo)
       if (Math.random() < 0.35) {
         const echoBri = flashBri * (0.3 + Math.random() * 0.4);
         setTimeout(() => {
@@ -169,9 +170,12 @@
     }
 
     gl.uniform1f(uStorm, stormValue);
+    gl.uniform1f(uSnow,  snowValue);
     gl.uniform1f(uFlash, 0);
-    document.addEventListener('storm:toggle', (e: Event) => {
-      stormTarget = (e as CustomEvent<{ active: boolean }>).detail.active ? 1.0 : 0.0;
+    document.addEventListener('weather:change', (e: Event) => {
+      const mode = (e as CustomEvent<{ mode: string }>).detail.mode;
+      stormTarget = mode === 'storm' ? 1.0 : 0.0;
+      snowTarget  = mode === 'snow'  ? 1.0 : 0.0;
     });
 
     gl.enable(gl.BLEND);
@@ -179,7 +183,7 @@
     gl.clearColor(0, 0, 0, 0);
 
     function resize(): void {
-      canvas!.width = Math.floor(window.innerWidth / 2);
+      canvas!.width  = Math.floor(window.innerWidth  / 2);
       canvas!.height = Math.floor(window.innerHeight / 2);
       gl!.viewport(0, 0, canvas!.width, canvas!.height);
       gl!.uniform2f(uRes, canvas!.width, canvas!.height);
@@ -197,24 +201,28 @@
       lastTs = now;
 
       stormValue += (stormTarget - stormValue) * 0.02;
+      snowValue  += (snowTarget  - snowValue)  * 0.02;
+
       const aspect = canvas.width / canvas.height;
+      // Snow keeps clouds slow; only storm multiplies speed
       cloudX += 0.03 * (aspect / (16 / 9)) * (1.0 + stormValue * 6.0) * dt;
       cloudZ += 0.07 * (1.0 + stormValue * 2.0) * dt;
 
-      // Flash scheduling
+      // Flash scheduling — storm only
       if (stormValue > 0.5) {
         if (nextFlashAt < 0)
-          nextFlashAt = now + (2 + Math.random() * 4) * 1000;
+          nextFlashAt = now + (5 + Math.random() * 15) * 1000;
         else if (now >= nextFlashAt) {
           triggerFlash();
-          nextFlashAt = now + (3 + Math.random() * 9) * 1000;
+          nextFlashAt = now + (5 + Math.random() * 15) * 1000;
         }
       } else {
         nextFlashAt = -1;
       }
       if (flashBri > 0) flashBri = Math.max(0, flashBri - flashDecay * dt);
 
-      gl!.uniform1f(uStorm, stormValue);
+      gl!.uniform1f(uStorm,  stormValue);
+      gl!.uniform1f(uSnow,   snowValue);
       gl!.uniform1f(uFlash,  flashBri * Math.min(stormValue, 1));
       gl!.uniform1f(uCloudX, cloudX);
       gl!.uniform1f(uCloudZ, cloudZ);

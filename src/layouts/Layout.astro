@@ -28,8 +28,9 @@ const { title } = Astro.props;
     <ClientRouter />
     <title>{title}</title>
     <script is:inline>
-      window.__storm = localStorage.getItem('storm') === '1';
-      if (window.__storm) document.documentElement.classList.add('storm');
+      window.__weather = localStorage.getItem('weather') || 'off';
+      if (window.__weather === 'storm') document.documentElement.classList.add('storm');
+      if (window.__weather === 'snow')  document.documentElement.classList.add('snow');
     </script>
   </head>
   <body class='bg-neutral-950 text-white min-h-screen flex flex-col'>
