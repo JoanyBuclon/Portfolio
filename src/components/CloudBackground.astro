@@ -21,6 +21,10 @@
     const FS = `
       precision mediump float;
       uniform float u_time;
+      uniform float u_storm;
+      uniform float u_flash;
+      uniform float u_cloud_x;
+      uniform float u_cloud_z;
       uniform vec2  u_resolution;
       uniform vec2  u_offset;
 
@@ -57,20 +61,30 @@
 
       const vec3  CLOUD_COLOR   = vec3(0.3, 0.3, 0.3);
       const float CLOUD_OPACITY = 0.5;
-      const float CLOUD_SPEED   = 0.03;
-      const float CLOUD_EVOLVE  = 0.07;
 
       void main() {
         vec2 uv = gl_FragCoord.xy / u_resolution;
         float aspect = u_resolution.x / u_resolution.y;
         vec2 p2 = vec2(uv.x * aspect, uv.y) * 2.5 + u_offset;
-        p2.x -= u_time * CLOUD_SPEED;
-        vec3 p = vec3(p2, u_time * CLOUD_EVOLVE);
+        p2.x -= u_cloud_x;
+        vec3 p = vec3(p2, u_cloud_z);
 
         vec2 q = vec2(fbm3(p), fbm3(p + vec3(5.2, 1.3, 0.0)));
         float n = clamp(fbm3(vec3(p.xy + q, p.z)), 0.0, 1.0);
 
-        gl_FragColor = vec4(CLOUD_COLOR * n, n * CLOUD_OPACITY);
+        vec3  activeColor   = mix(CLOUD_COLOR, vec3(0.22, 0.25, 0.35), u_storm);
+        float activeOpacity = mix(CLOUD_OPACITY, 0.75, u_storm);
+
+        // Lightning: clouds burst to near-white, opacity spikes
+        vec3  litColor = vec3(0.88, 0.93, 1.00);
+        vec3  finalColor   = mix(activeColor,   litColor, u_flash);
+        float finalOpacity = mix(activeOpacity, 1.0,      u_flash);
+        // Faint ambient so even thin sky areas catch the light
+        float ambient = u_flash * 0.10;
+        gl_FragColor = vec4(
+          finalColor * n + litColor * ambient,
+          clamp(n * finalOpacity + ambient, 0.0, 1.0)
+        );
       }
     `;
 
@@ -108,10 +122,57 @@
     gl.enableVertexAttribArray(aPos);
     gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
 
-    const uTime = gl.getUniformLocation(program, 'u_time');
-    const uRes = gl.getUniformLocation(program, 'u_resolution');
+    const uTime   = gl.getUniformLocation(program, 'u_time');
+    const uStorm  = gl.getUniformLocation(program, 'u_storm');
+    const uFlash  = gl.getUniformLocation(program, 'u_flash');
+    const uCloudX = gl.getUniformLocation(program, 'u_cloud_x');
+    const uCloudZ = gl.getUniformLocation(program, 'u_cloud_z');
+    const uRes    = gl.getUniformLocation(program, 'u_resolution');
     const uOffset = gl.getUniformLocation(program, 'u_offset');
     gl.uniform2f(uOffset, Math.random() * 1000, Math.random() * 1000);
+
+    let stormTarget = (window as any).__storm ? 1.0 : 0.0;
+    let stormValue  = stormTarget;
+    let cloudX = 0;
+    let cloudZ = 0;
+    let lastTs = -1;
+
+    // Lightning flash state
+    let flashBri     = 0;
+    let flashDecay   = 0;
+    let nextFlashAt  = -1; // -1 = not scheduled
+
+    function triggerFlash(): void {
+      const rnd = Math.random();
+      if (rnd < 0.30) {
+        // Slow large flash — whole sky
+        flashBri   = 0.55 + Math.random() * 0.45;
+        flashDecay = 2.0  + Math.random() * 2.0;
+      } else if (rnd < 0.65) {
+        // Medium flash
+        flashBri   = 0.70 + Math.random() * 0.30;
+        flashDecay = 5.0  + Math.random() * 5.0;
+      } else {
+        // Fast sharp flash
+        flashBri   = 0.80 + Math.random() * 0.20;
+        flashDecay = 12.0 + Math.random() * 10.0;
+      }
+      // 35 % chance of double flash (echo)
+      if (Math.random() < 0.35) {
+        const echoBri = flashBri * (0.3 + Math.random() * 0.4);
+        setTimeout(() => {
+          if (stormValue < 0.1) return;
+          flashBri   = echoBri;
+          flashDecay = flashDecay * 1.3;
+        }, 80 + Math.random() * 200);
+      }
+    }
+
+    gl.uniform1f(uStorm, stormValue);
+    gl.uniform1f(uFlash, 0);
+    document.addEventListener('storm:toggle', (e: Event) => {
+      stormTarget = (e as CustomEvent<{ active: boolean }>).detail.active ? 1.0 : 0.0;
+    });
 
     gl.enable(gl.BLEND);
     gl.blendFunc(gl.SRC_ALPHA, gl.ONE_MINUS_SRC_ALPHA);
@@ -130,9 +191,35 @@
     let rafId = 0;
     let shouldRun = false;
 
-    function draw(): void {
+    function draw(now: number): void {
+      if (lastTs < 0) lastTs = now;
+      const dt = Math.min((now - lastTs) / 1000, 0.1);
+      lastTs = now;
+
+      stormValue += (stormTarget - stormValue) * 0.02;
+      const aspect = canvas.width / canvas.height;
+      cloudX += 0.03 * (aspect / (16 / 9)) * (1.0 + stormValue * 6.0) * dt;
+      cloudZ += 0.07 * (1.0 + stormValue * 2.0) * dt;
+
+      // Flash scheduling
+      if (stormValue > 0.5) {
+        if (nextFlashAt < 0)
+          nextFlashAt = now + (2 + Math.random() * 4) * 1000;
+        else if (now >= nextFlashAt) {
+          triggerFlash();
+          nextFlashAt = now + (3 + Math.random() * 9) * 1000;
+        }
+      } else {
+        nextFlashAt = -1;
+      }
+      if (flashBri > 0) flashBri = Math.max(0, flashBri - flashDecay * dt);
+
+      gl!.uniform1f(uStorm, stormValue);
+      gl!.uniform1f(uFlash,  flashBri * Math.min(stormValue, 1));
+      gl!.uniform1f(uCloudX, cloudX);
+      gl!.uniform1f(uCloudZ, cloudZ);
       gl!.clear(gl!.COLOR_BUFFER_BIT);
-      gl!.uniform1f(uTime, (performance.now() - startTime) / 1000);
+      gl!.uniform1f(uTime, (now - startTime) / 1000);
       gl!.drawArrays(gl!.TRIANGLES, 0, 6);
       rafId = requestAnimationFrame(draw);
     }

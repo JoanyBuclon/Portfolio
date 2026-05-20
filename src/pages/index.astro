@@ -8,3 +8,28 @@ import Layout from '../layouts/Layout.astro';
     <h2 class='text-xl md:text-2xl'>Novelist & Software Engineer</h2>
   </div>
 </Layout>
+
+<script>
+  function setup(): void {
+    const h1 = document.querySelector<HTMLHeadingElement>('h1');
+    if (!h1) return;
+    h1.style.touchAction = 'manipulation';
+    let n = 0;
+    let t: ReturnType<typeof setTimeout>;
+    h1.addEventListener('pointerdown', () => {
+      clearTimeout(t);
+      n++;
+      t = setTimeout(() => {
+        n = 0;
+      }, 400);
+      if (n >= 5) {
+        n = 0;
+        const on = document.documentElement.classList.toggle('storm');
+        (window as any).__storm = on;
+        localStorage.setItem('storm', on ? '1' : '0');
+        document.dispatchEvent(new CustomEvent('storm:toggle', { detail: { active: on } }));
+      }
+    });
+  }
+  document.addEventListener('astro:page-load', setup);
+</script>
