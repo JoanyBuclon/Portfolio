@@ -34,7 +34,9 @@ import Layout from '../layouts/Layout.astro';
         }
         document.documentElement.classList.toggle('storm', newMode === 'storm');
         document.documentElement.classList.toggle('snow',  newMode === 'snow');
-        document.dispatchEvent(new CustomEvent('weather:change', { detail: { mode: newMode } }));
+        setTimeout(() => {
+          document.dispatchEvent(new CustomEvent('weather:change', { detail: { mode: newMode } }));
+        }, 0);
       }
     });
   }
