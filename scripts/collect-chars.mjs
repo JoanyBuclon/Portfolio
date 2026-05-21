@@ -12,7 +12,6 @@ const TEMPLATE_FILES = [
   'src/pages/about.astro',
   'src/pages/404.astro',
   'src/components/HeaderComponent.astro',
-  'src/components/BetaComponent.astro',
   'src/components/TimelineComponent.astro',
   'src/components/SkillCardComponent.astro',
   'src/components/ScrollArrowComponent.astro',
