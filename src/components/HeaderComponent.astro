@@ -5,16 +5,16 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
 
 <header class='fixed top-0 right-0 z-10 flex justify-end gap-2 p-10'>
   <div class='burger flex flex-col items-end'>
-    <div id='nav-icon2'>
+    <button id='nav-icon2' aria-label='Navigation menu' aria-expanded='false' aria-controls='nav-menu'>
       <span></span>
       <span></span>
       <span></span>
       <span></span>
       <span></span>
       <span></span>
-    </div>
+    </button>
 
-    <div class='nav text-lg'>
+    <div id='nav-menu' class='nav text-lg'>
       <a href='/' class:list={[{ active: isActive('/') }]}>home</a>
       <a href='/about' class:list={[{ active: isActive('/about') }]}>about</a>
       <div class='spacer pt-2 pb-2'></div>
@@ -28,32 +28,45 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
 <script>
   function attachBurger(): void {
     const burger = document.querySelector<HTMLElement>('.burger');
-    const navicon = document.querySelector<HTMLElement>('#nav-icon2');
-    const nav = document.querySelector<HTMLElement>('.nav');
+    const navicon = document.querySelector<HTMLButtonElement>('#nav-icon2');
+    const nav = document.querySelector<HTMLElement>('#nav-menu');
     if (!burger || !navicon || !nav) return;
 
-    // Desktop
-    burger.addEventListener('mouseenter', () => {
+    const open = () => {
       navicon.classList.add('open');
       nav.classList.add('display');
-    });
-    burger.addEventListener('mouseleave', () => {
+      navicon.setAttribute('aria-expanded', 'true');
+    };
+    const close = () => {
       navicon.classList.remove('open');
       nav.classList.remove('display');
-    });
+      navicon.setAttribute('aria-expanded', 'false');
+    };
 
-    // Mobile
+    // Desktop: hover
+    burger.addEventListener('mouseenter', open);
+    burger.addEventListener('mouseleave', close);
+
+    // Touch: toggle on tap, close on outside tap
     burger.addEventListener('pointerdown', (e: PointerEvent) => {
       if (e.pointerType !== 'touch') return;
       e.preventDefault();
-      const isOpen = navicon.classList.contains('open');
-      navicon.classList.toggle('open', !isOpen);
-      nav.classList.toggle('display', !isOpen);
+      navicon.classList.contains('open') ? close() : open();
     });
     document.addEventListener('pointerdown', (e: PointerEvent) => {
       if (e.pointerType !== 'touch' || burger.contains(e.target as Node)) return;
-      navicon.classList.remove('open');
-      nav.classList.remove('display');
+      close();
+    });
+
+    // Keyboard: Enter/Space to toggle, Escape to close
+    navicon.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Enter' || e.key === ' ') {
+        e.preventDefault();
+        navicon.classList.contains('open') ? close() : open();
+      }
+    });
+    document.addEventListener('keydown', (e: KeyboardEvent) => {
+      if (e.key === 'Escape') close();
     });
   }
 
@@ -89,6 +102,10 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
 
   /* Menu Burger Still */
   #nav-icon2 {
+    appearance: none;
+    background: none;
+    border: none;
+    padding: 0;
     width: 30px;
     height: 45px;
     margin-left: 12px;
