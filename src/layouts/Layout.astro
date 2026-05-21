@@ -7,16 +7,19 @@ import AnchorComponent from '../components/AnchorComponent.astro';
 import PageTransition from '../components/PageTransition.astro';
 import CloudBackground from '../components/CloudBackground.astro';
 import RainBackground from '../components/RainBackground.astro';
-const { title } = Astro.props;
+const { title, description = "Hi, I'm Joany Buclon, welcome to my portfolio." } = Astro.props;
+const ogImage = 'https://joanybuclon.com/og-cover.jpg';
 ---
 
 <html lang='en'>
   <head>
     <meta charset='utf-8' />
-    <meta
-      name='description'
-      content="Hi, I'm Joany Buclon, a french Novelist and Software Engineer. Welcome to my portfolio."
-    />
+    <meta name='description' content={description} />
+    <meta property='og:title' content={title} />
+    <meta property='og:description' content={description} />
+    <meta property='og:image' content={ogImage} />
+    <meta property='og:type' content='website' />
+    <meta name='twitter:card' content='summary_large_image' />
 
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <link rel='icon' href='/favicon.ico' />
