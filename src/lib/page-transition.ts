@@ -1,5 +1,3 @@
-const TOTAL = 7000;
-const COLS = 120;
 const SCALE = 8;
 const OCTAVES = 3;
 const LIGHT = 130;
@@ -42,22 +40,37 @@ function fbm(x: number, y: number): number {
   }
   return total / max;
 }
-function toHex(n: number): string {
-  return n.toString(16).padStart(2, '0');
-}
 
-export function generateLettersHtml(): string {
+export function drawLetters(canvas: HTMLCanvasElement, fontFamily: string): void {
+  const ctx = canvas.getContext('2d');
+  if (!ctx) return;
+
+  const w = canvas.width;
+  const h = canvas.height;
+
+  const fontSize = Math.round(Math.max(20, Math.min(32, w * 0.022)));
+  ctx.font = `800 italic ${fontSize}px ${fontFamily}`;
+  ctx.textBaseline = 'top';
+
+  const charWidth = ctx.measureText('M').width + fontSize * 0.08;
+  const rowHeight = fontSize * 1.15;
+
+  const cols = Math.ceil(w / charWidth) + 1;
+  const rows = Math.ceil(h / rowHeight) + 1;
+
   const offsetX = Math.random() * 1000;
   const offsetY = Math.random() * 1000;
-  let html = '';
-  for (let i = 0; i < TOTAL; i++) {
-    const col = i % COLS;
-    const row = Math.floor(i / COLS);
-    const n = fbm(col / SCALE + offsetX, row / SCALE + offsetY);
-    const g = Math.round(DARK + (LIGHT - DARK) * n);
-    const c = toHex(g);
-    const ch = LETTERS[Math.floor(Math.random() * LETTERS.length)];
-    html += `<span style="color:#${c}${c}${c}">${ch}</span>`;
+
+  ctx.clearRect(0, 0, w, h);
+
+  for (let row = 0; row < rows; row++) {
+    for (let col = 0; col < cols; col++) {
+      const n = fbm(col / SCALE + offsetX, row / SCALE + offsetY);
+      const g = Math.round(DARK + (LIGHT - DARK) * n);
+      const hex = g.toString(16).padStart(2, '0');
+      ctx.fillStyle = `#${hex}${hex}${hex}`;
+      const ch = LETTERS[Math.floor(Math.random() * LETTERS.length)];
+      ctx.fillText(ch, col * charWidth, row * rowHeight);
+    }
   }
-  return html;
 }

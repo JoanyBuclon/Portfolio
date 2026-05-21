@@ -1,12 +1,9 @@
----
----
-
 <div class='page-transition' aria-hidden='true' transition:persist>
-  <div class='letters font-display' />
+  <canvas class='letters'></canvas>
 </div>
 
 <script>
-  import { generateLettersHtml } from '../lib/page-transition';
+  import { drawLetters } from '../lib/page-transition';
 
   interface PreparationEvent extends Event {
     loader: () => Promise<void>;
@@ -17,9 +14,19 @@
   setTimeout(regenerateLetters, 0);
 
   function regenerateLetters(): void {
-    const container = document.querySelector<HTMLElement>('.page-transition .letters');
-    if (!container) return;
-    container.innerHTML = generateLettersHtml();
+    const canvas = document.querySelector<HTMLCanvasElement>('.page-transition .letters');
+    if (!canvas) return;
+    canvas.width = window.innerWidth;
+    canvas.height = window.innerHeight;
+
+    const probe = document.createElement('span');
+    probe.className = 'font-display';
+    probe.style.cssText = 'position:absolute;visibility:hidden';
+    document.body.appendChild(probe);
+    const fontFamily = getComputedStyle(probe).fontFamily;
+    document.body.removeChild(probe);
+
+    document.fonts.ready.then(() => drawLetters(canvas, fontFamily));
   }
 
   function playCover(el: Element): Promise<void> {
@@ -113,16 +120,7 @@
   }
 
   .letters {
-    width: 100%;
-    height: 100%;
-    font-size: clamp(1.25rem, 2.2vw, 2rem);
-    line-height: 1.15;
-    letter-spacing: 0.08em;
-    word-break: break-all;
-    user-select: none;
-    padding: 0;
-    box-sizing: border-box;
-    overflow: hidden;
+    display: block;
   }
 
   @media (prefers-reduced-motion: reduce) {
