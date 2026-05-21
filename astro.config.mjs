@@ -3,14 +3,20 @@ import { defineConfig, fontProviders } from 'astro/config';
 
 import tailwindcss from '@tailwindcss/vite';
 
+import sitemap from '@astrojs/sitemap';
+
 // https://astro.build/config
 export default defineConfig({
+  site: 'https://joanybuclon.com',
+
   vite: {
     plugins: [tailwindcss()]
   },
+
   build: {
     inlineStylesheets: 'always'
   },
+
   fonts: [
     {
       provider: fontProviders.local(),
@@ -42,5 +48,7 @@ export default defineConfig({
         ]
       }
     }
-  ]
+  ],
+
+  integrations: [sitemap()]
 });
