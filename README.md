@@ -1,4 +1,4 @@
-# Portfolio v2.x
+# Portfolio Astro
 
 My personal portfolio accessible [here](https://joanybuclon.com).
 
