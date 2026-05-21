@@ -31,11 +31,27 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
     const navicon = document.querySelector<HTMLElement>('#nav-icon2');
     const nav = document.querySelector<HTMLElement>('.nav');
     if (!burger || !navicon || !nav) return;
+
+    // Desktop
     burger.addEventListener('mouseenter', () => {
       navicon.classList.add('open');
       nav.classList.add('display');
     });
     burger.addEventListener('mouseleave', () => {
+      navicon.classList.remove('open');
+      nav.classList.remove('display');
+    });
+
+    // Mobile
+    burger.addEventListener('pointerdown', (e: PointerEvent) => {
+      if (e.pointerType !== 'touch') return;
+      e.preventDefault();
+      const isOpen = navicon.classList.contains('open');
+      navicon.classList.toggle('open', !isOpen);
+      nav.classList.toggle('display', !isOpen);
+    });
+    document.addEventListener('pointerdown', (e: PointerEvent) => {
+      if (e.pointerType !== 'touch' || burger.contains(e.target as Node)) return;
       navicon.classList.remove('open');
       nav.classList.remove('display');
     });
