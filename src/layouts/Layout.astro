@@ -29,6 +29,17 @@ const ogImage = 'https://joanybuclon.com/og-cover.jpg';
     <Font cssVariable='--font-neue-montreal' preload />
     <ClientRouter />
     <title>{title}</title>
+    <script type='application/ld+json' set:html={JSON.stringify({
+      '@context': 'https://schema.org',
+      '@type': 'Person',
+      'name': 'Joany Buclon',
+      'jobTitle': 'Tech Lead Engineer',
+      'url': 'https://joanybuclon.com',
+      'sameAs': [
+        'https://github.com/JoanyBuclon',
+        'https://linkedin.com/in/joany-buclon/'
+      ]
+    })} />
     <script is:inline>
       window.__weather = localStorage.getItem('weather') || 'off';
       if (window.__weather === 'storm') document.documentElement.classList.add('storm');
