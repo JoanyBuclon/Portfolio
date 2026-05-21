@@ -14,32 +14,41 @@ const ogImage = 'https://joanybuclon.com/og-cover.jpg';
 <html lang='en'>
   <head>
     <meta charset='utf-8' />
+    <title>{title}</title>
     <meta name='description' content={description} />
+    <meta name='viewport' content='width=device-width, initial-scale=1' />
+    <meta name='generator' content={Astro.generator} />
+
+    <meta property='og:type' content='website' />
     <meta property='og:title' content={title} />
     <meta property='og:description' content={description} />
     <meta property='og:image' content={ogImage} />
-    <meta property='og:type' content='website' />
+    <meta property='og:url' content={Astro.url.href} />
+    <meta property='og:locale' content='en_US' />
+
     <meta name='twitter:card' content='summary_large_image' />
+    <meta name='twitter:title' content={title} />
+    <meta name='twitter:description' content={description} />
+    <meta name='twitter:image' content={ogImage} />
 
     <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
     <link rel='icon' href='/favicon.ico' />
-    <meta name='viewport' content='width=device-width, initial-scale=1' />
-    <meta name='generator' content={Astro.generator} />
     <Font cssVariable='--font-migra' preload />
     <Font cssVariable='--font-neue-montreal' preload />
     <ClientRouter />
-    <title>{title}</title>
-    <script type='application/ld+json' set:html={JSON.stringify({
-      '@context': 'https://schema.org',
-      '@type': 'Person',
-      'name': 'Joany Buclon',
-      'jobTitle': 'Tech Lead Engineer',
-      'url': 'https://joanybuclon.com',
-      'sameAs': [
-        'https://github.com/JoanyBuclon',
-        'https://linkedin.com/in/joany-buclon/'
-      ]
-    })} />
+    <script
+      type='application/ld+json'
+      set:html={JSON.stringify({
+        '@context': 'https://schema.org',
+        '@type': 'Person',
+        name: 'Joany Buclon',
+        jobTitle: 'Tech Lead Engineer',
+        url: 'https://joanybuclon.com',
+        email: 'contact@joanybuclon.com',
+        description: 'Tech Lead Engineer and Novelist based in Bordeaux, France.',
+        sameAs: ['https://github.com/JoanyBuclon', 'https://linkedin.com/in/joany-buclon/'],
+      })}
+    />
     <script is:inline>
       window.__weather = localStorage.getItem('weather') || 'off';
       if (window.__weather === 'storm') document.documentElement.classList.add('storm');
