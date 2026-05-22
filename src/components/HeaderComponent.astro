@@ -58,6 +58,7 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
     // Touch: toggle on tap, close on outside tap
     burger.addEventListener('pointerdown', (e: PointerEvent) => {
       if (e.pointerType !== 'touch') return;
+      if (!navicon.contains(e.target as Node)) return;
       e.preventDefault();
       if (navicon.classList.contains('open')) {
         close();
