@@ -8,55 +8,58 @@ import mePhoto from '../assets/me.jpg';
 ---
 
 <Layout
-  title='About - Joany Buclon'
-  description='Tech Lead Engineer and Novelist based in Bordeaux, France. Discover my background, skills and projects.'
+  title="About - Joany Buclon"
+  description="Tech Lead Engineer and Novelist based in Bordeaux, France. Discover my background, skills and projects."
 >
   <div>
-    <div class='relative flex flex-col justify-center min-h-screen items-center p-6 md:p-10 pt-0'>
-      <h1 class='text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-display'>About Me</h1>
+    <div class="relative flex flex-col justify-center min-h-screen items-center p-6 md:p-10 pt-0">
+      <h1 class="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-display">About Me</h1>
       <ScrollArrowComponent />
     </div>
-    <div class='max-w-7xl mx-auto px-4 md:px-6 mt-16 md:mt-32'>
-      <div class='flex flex-row items-center p-4 md:p-10 gap-4 md:gap-10'>
-        <div class='flex-1 min-w-0'>
-          <h2 class='text-2xl md:text-3xl font-semibold mb-4 md:mb-6'>Hi, my name is Joany!</h2>
-          <div class='space-y-4 text-base md:text-lg leading-relaxed'>
+    <div class="max-w-7xl mx-auto px-4 md:px-6 mt-16 md:mt-32">
+      <div class="flex flex-row items-center p-4 md:p-10 gap-4 md:gap-10">
+        <div class="flex-1 min-w-0">
+          <h2 class="text-2xl md:text-3xl font-semibold mb-4 md:mb-6">Hi, my name is Joany!</h2>
+          <div class="space-y-4 text-base md:text-lg leading-relaxed">
             <p>
-              I'm a <span class='text-indigo-400'>Tech Lead Engineer</span> living in
-              <span class='text-indigo-400'>Bordeaux</span>, France. I've been working in the field since 2017, helping
-              companies of all sizes ship products with performance and code quality in mind.
+              I'm a <span class="text-indigo-400">Tech Lead Engineer</span> living in
+              <span class="text-indigo-400">Bordeaux</span>, France. I've been working in the field
+              since 2017, helping companies of all sizes ship products with performance and code
+              quality in mind.
             </p>
             <p>
               I'm also pouring my energy into personal projects, from writing
-              <span class='text-indigo-400'>fantasy books</span> to coding
-              <span class='text-indigo-400'>video games</span>.
+              <span class="text-indigo-400">fantasy books</span> to coding
+              <span class="text-indigo-400">video games</span>.
             </p>
-            <p>Feel free to learn more about me and my projects. I can't wait to share them with you!</p>
+            <p>
+              Feel free to learn more about me and my projects. I can't wait to share them with you!
+            </p>
           </div>
         </div>
         <Image
           src={mePhoto}
-          alt='Portrait of Joany Buclon'
+          alt="Portrait of Joany Buclon"
           widths={[200, 400]}
-          sizes='(max-width: 768px) 112px, 224px'
-          format='webp'
+          sizes="(max-width: 768px) 112px, 224px"
+          format="webp"
           quality={90}
-          loading='lazy'
-          decoding='async'
-          class='rounded-full object-cover aspect-square w-28 md:w-56 shrink-0'
+          loading="lazy"
+          decoding="async"
+          class="rounded-full object-cover aspect-square w-28 md:w-56 shrink-0"
         />
       </div>
-      <div class='flex flex-col p-4 md:p-10 gap-8'>
-        <h2 class='text-4xl md:text-5xl'>Experience</h2>
+      <div class="flex flex-col p-4 md:p-10 gap-8">
+        <h2 class="text-4xl md:text-5xl">Experience</h2>
         <TimelineComponent />
       </div>
-      <div class='flex flex-col p-4 md:p-10 gap-8'>
-        <h2 class='text-4xl md:text-5xl'>Profile</h2>
+      <div class="flex flex-col p-4 md:p-10 gap-8">
+        <h2 class="text-4xl md:text-5xl">Profile</h2>
         <SkillCardComponent />
       </div>
-      <div class='flex flex-col p-4 md:p-10 gap-8 my-16 md:m-30'>
-        <h2 class='text-xl text-center'>
-          <a href='mailto:contact@joanybuclon.com'>contact@joanybuclon.com</a>
+      <div class="flex flex-col p-4 md:p-10 gap-8 my-16 md:m-30">
+        <h2 class="text-xl text-center">
+          <a href="mailto:contact@joanybuclon.com">contact@joanybuclon.com</a>
         </h2>
       </div>
     </div>

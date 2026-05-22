@@ -3,9 +3,14 @@ const pathname = Astro.url.pathname;
 const isActive = (href: string) => pathname === href || (href !== '/' && pathname.startsWith(href));
 ---
 
-<header class='fixed top-0 right-0 z-10 flex justify-end gap-2 p-10'>
-  <div class='burger flex flex-col items-end'>
-    <button id='nav-icon2' aria-label='Navigation menu' aria-expanded='false' aria-controls='nav-menu'>
+<header class="fixed top-0 right-0 z-10 flex justify-end gap-2 p-10">
+  <div class="burger flex flex-col items-end">
+    <button
+      id="nav-icon2"
+      aria-label="Navigation menu"
+      aria-expanded="false"
+      aria-controls="nav-menu"
+    >
       <span></span>
       <span></span>
       <span></span>
@@ -14,13 +19,16 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
       <span></span>
     </button>
 
-    <div id='nav-menu' class='nav text-lg'>
-      <a href='/' class:list={[{ active: isActive('/') }]}>home</a>
-      <a href='/about' class:list={[{ active: isActive('/about') }]}>about</a>
-      <div class='spacer pt-2 pb-2'></div>
-      <a href='https://github.com/JoanyBuclon' target='_blank' rel='noopener noreferrer'>github ↗</a>
-      <a href='https://linkedin.com/in/joany-buclon/' target='_blank' rel='noopener noreferrer'>linkedin ↗</a>
-      <a href='mailto:contact@joanybuclon.com'>email ↗</a>
+    <div id="nav-menu" class="nav text-lg">
+      <a href="/" class:list={[{ active: isActive('/') }]}>home</a>
+      <a href="/about" class:list={[{ active: isActive('/about') }]}>about</a>
+      <div class="spacer pt-2 pb-2"></div>
+      <a href="https://github.com/JoanyBuclon" target="_blank" rel="noopener noreferrer">github ↗</a
+      >
+      <a href="https://linkedin.com/in/joany-buclon/" target="_blank" rel="noopener noreferrer"
+        >linkedin ↗</a
+      >
+      <a href="mailto:contact@joanybuclon.com">email ↗</a>
     </div>
   </div>
 </header>
@@ -51,7 +59,11 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
     burger.addEventListener('pointerdown', (e: PointerEvent) => {
       if (e.pointerType !== 'touch') return;
       e.preventDefault();
-      if (navicon.classList.contains('open')) { close(); } else { open(); }
+      if (navicon.classList.contains('open')) {
+        close();
+      } else {
+        open();
+      }
     });
     document.addEventListener('pointerdown', (e: PointerEvent) => {
       if (e.pointerType !== 'touch' || burger.contains(e.target as Node)) return;
@@ -62,7 +74,11 @@ const isActive = (href: string) => pathname === href || (href !== '/' && pathnam
     navicon.addEventListener('keydown', (e: KeyboardEvent) => {
       if (e.key === 'Enter' || e.key === ' ') {
         e.preventDefault();
-        if (navicon.classList.contains('open')) { close(); } else { open(); }
+        if (navicon.classList.contains('open')) {
+          close();
+        } else {
+          open();
+        }
       }
     });
     document.addEventListener('keydown', (e: KeyboardEvent) => {

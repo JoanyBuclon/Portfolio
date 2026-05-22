@@ -1,20 +1,20 @@
-@import "tailwindcss";
+@import 'tailwindcss';
 
 @theme inline {
-    --font-sans: var(--font-neue-montreal);
-    --font-display: var(--font-migra);
+  --font-sans: var(--font-neue-montreal);
+  --font-display: var(--font-migra);
 }
 
 a:hover {
-    color: var(--color-indigo-400);
+  color: var(--color-indigo-400);
 }
 
 ::selection {
-    background-color: var(--color-indigo-400);
-    color: black;
+  background-color: var(--color-indigo-400);
+  color: black;
 }
 
 :focus-visible {
-    outline: 2px solid var(--color-indigo-400);
-    outline-offset: 3px;
+  outline: 2px solid var(--color-indigo-400);
+  outline-offset: 3px;
 }

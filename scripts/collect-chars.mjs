@@ -24,7 +24,7 @@ const chars = new Set();
 function addChars(text) {
   for (const ch of text) {
     const cp = ch.codePointAt(0);
-    if (cp >= 0x20 && cp !== 0x7F) chars.add(ch);
+    if (cp >= 0x20 && cp !== 0x7f) chars.add(ch);
   }
 }
 
@@ -39,30 +39,37 @@ for (const rel of TEMPLATE_FILES) {
   for (const [, str] of content.matchAll(/['"]([^'"]{2,})['"]/g)) addChars(str);
 }
 
-const allCps = [...chars].map(c => c.codePointAt(0)).sort((a, b) => a - b);
+const allCps = [...chars].map((c) => c.codePointAt(0)).sort((a, b) => a - b);
 const ranges = [];
-let start = allCps[0], end = allCps[0];
+let start = allCps[0],
+  end = allCps[0];
 for (let i = 1; i < allCps.length; i++) {
   if (allCps[i] <= end + 2) {
     end = allCps[i];
   } else {
-    ranges.push(start === end
-      ? `U+${start.toString(16).toUpperCase().padStart(4, '0')}`
-      : `U+${start.toString(16).toUpperCase().padStart(4, '0')}-${end.toString(16).toUpperCase().padStart(4, '0')}`);
+    ranges.push(
+      start === end
+        ? `U+${start.toString(16).toUpperCase().padStart(4, '0')}`
+        : `U+${start.toString(16).toUpperCase().padStart(4, '0')}-${end.toString(16).toUpperCase().padStart(4, '0')}`
+    );
     start = end = allCps[i];
   }
 }
-ranges.push(start === end
-  ? `U+${start.toString(16).toUpperCase().padStart(4, '0')}`
-  : `U+${start.toString(16).toUpperCase().padStart(4, '0')}-${end.toString(16).toUpperCase().padStart(4, '0')}`);
+ranges.push(
+  start === end
+    ? `U+${start.toString(16).toUpperCase().padStart(4, '0')}`
+    : `U+${start.toString(16).toUpperCase().padStart(4, '0')}-${end.toString(16).toUpperCase().padStart(4, '0')}`
+);
 
 const rangeStr = ranges.join(',');
 
 if (RANGE_ONLY) {
   process.stdout.write(rangeStr + '\n');
 } else {
-  const ascii = [...chars].filter(c => c.codePointAt(0) <= 0x7E).sort();
-  const nonAscii = [...chars].filter(c => c.codePointAt(0) > 0x7E).sort((a, b) => a.codePointAt(0) - b.codePointAt(0));
+  const ascii = [...chars].filter((c) => c.codePointAt(0) <= 0x7e).sort();
+  const nonAscii = [...chars]
+    .filter((c) => c.codePointAt(0) > 0x7e)
+    .sort((a, b) => a.codePointAt(0) - b.codePointAt(0));
 
   console.log('\n=== ASCII printable chars found ===');
   console.log(ascii.join(''));
@@ -71,7 +78,9 @@ if (RANGE_ONLY) {
     console.log('(none)');
   } else {
     for (const c of nonAscii) {
-      console.log(`  U+${c.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')}  ${c}  (${c.codePointAt(0)})`);
+      console.log(
+        `  U+${c.codePointAt(0).toString(16).toUpperCase().padStart(4, '0')}  ${c}  (${c.codePointAt(0)})`
+      );
     }
   }
   console.log('\n=== Unicode range ===');

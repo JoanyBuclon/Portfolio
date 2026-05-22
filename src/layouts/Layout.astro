@@ -11,35 +11,36 @@ const { title, description = "Hi, I'm Joany Buclon, welcome to my portfolio." } 
 const ogImage = 'https://joanybuclon.com/og-cover.webp';
 ---
 
-<html lang='en'>
+<html lang="en">
   <head>
-    <meta charset='utf-8' />
+    <meta charset="utf-8" />
     <title>{title}</title>
-    <meta name='description' content={description} />
-    <meta name='viewport' content='width=device-width, initial-scale=1' />
-    <meta name='generator' content={Astro.generator} />
-    <meta name='author' content='Joany Buclon' />
-    <meta name='theme-color' content='#0a0a0a' />
+    <meta name="description" content={description} />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="generator" content={Astro.generator} />
+    <meta name="author" content="Joany Buclon" />
+    <meta name="theme-color" content="#0a0a0a" />
 
-    <meta property='og:type' content='website' />
-    <meta property='og:title' content={title} />
-    <meta property='og:description' content={description} />
-    <meta property='og:image' content={ogImage} />
-    <meta property='og:url' content={Astro.url.href} />
-    <meta property='og:locale' content='en_US' />
+    <meta property="og:type" content="website" />
+    <meta property="og:title" content={title} />
+    <meta property="og:description" content={description} />
+    <meta property="og:image" content={ogImage} />
+    <meta property="og:url" content={Astro.url.href} />
+    <meta property="og:locale" content="en_US" />
 
-    <meta name='twitter:card' content='summary_large_image' />
-    <meta name='twitter:title' content={title} />
-    <meta name='twitter:description' content={description} />
-    <meta name='twitter:image' content={ogImage} />
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content={title} />
+    <meta name="twitter:description" content={description} />
+    <meta name="twitter:image" content={ogImage} />
 
-    <link rel='icon' type='image/svg+xml' href='/favicon.svg' />
-    <link rel='icon' href='/favicon.ico' />
-    <Font cssVariable='--font-migra' preload />
-    <Font cssVariable='--font-neue-montreal' preload />
+    <link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+    <link rel="icon" href="/favicon.ico" />
+    <Font cssVariable="--font-migra" preload />
+    <Font cssVariable="--font-neue-montreal" preload />
     <ClientRouter />
     <script
-      type='application/ld+json'
+      is:inline
+      type="application/ld+json"
       set:html={JSON.stringify({
         '@context': 'https://schema.org',
         '@type': 'Person',
@@ -57,7 +58,7 @@ const ogImage = 'https://joanybuclon.com/og-cover.webp';
       if (window.__weather === 'snow') document.documentElement.classList.add('snow');
     </script>
   </head>
-  <body class='bg-neutral-950 text-white min-h-screen flex flex-col'>
+  <body class="bg-neutral-950 text-white min-h-screen flex flex-col">
     <CloudBackground />
     <RainBackground />
 
@@ -66,7 +67,7 @@ const ogImage = 'https://joanybuclon.com/og-cover.webp';
     <HeaderComponent />
     <AnchorComponent />
 
-    <main class='flex flex-1 items-center justify-center'>
+    <main class="flex flex-1 items-center justify-center">
       <slot />
     </main>
   </body>

@@ -1,4 +1,4 @@
-<canvas id='cloud-bg' aria-hidden='true' transition:persist></canvas>
+<canvas id="cloud-bg" aria-hidden="true" transition:persist></canvas>
 
 <script>
   let initialized = false;
@@ -120,65 +120,72 @@
 
     const buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+      gl.STATIC_DRAW
+    );
 
     const aPos = gl.getAttribLocation(program, 'a_position');
     gl.enableVertexAttribArray(aPos);
     gl.vertexAttribPointer(aPos, 2, gl.FLOAT, false, 0, 0);
 
-    const uTime   = gl.getUniformLocation(program, 'u_time');
-    const uStorm  = gl.getUniformLocation(program, 'u_storm');
-    const uSnow   = gl.getUniformLocation(program, 'u_snow');
-    const uFlash  = gl.getUniformLocation(program, 'u_flash');
+    const uTime = gl.getUniformLocation(program, 'u_time');
+    const uStorm = gl.getUniformLocation(program, 'u_storm');
+    const uSnow = gl.getUniformLocation(program, 'u_snow');
+    const uFlash = gl.getUniformLocation(program, 'u_flash');
     const uCloudX = gl.getUniformLocation(program, 'u_cloud_x');
     const uCloudZ = gl.getUniformLocation(program, 'u_cloud_z');
-    const uRes    = gl.getUniformLocation(program, 'u_resolution');
+    const uRes = gl.getUniformLocation(program, 'u_resolution');
     const uOffset = gl.getUniformLocation(program, 'u_offset');
     gl.uniform2f(uOffset, Math.random() * 1000, Math.random() * 1000);
 
     const initMode = ((window as any).__weather as string) || 'off';
     let stormTarget = initMode === 'storm' ? 1.0 : 0.0;
-    let stormValue  = stormTarget;
-    let snowTarget  = initMode === 'snow'  ? 1.0 : 0.0;
-    let snowValue   = snowTarget;
+    let stormValue = stormTarget;
+    let snowTarget = initMode === 'snow' ? 1.0 : 0.0;
+    let snowValue = snowTarget;
     let cloudX = 0;
     let cloudZ = 0;
     let lastTs = -1;
 
     // Lightning flash state (storm only)
-    let flashBri    = 0;
-    let flashDecay  = 0;
+    let flashBri = 0;
+    let flashDecay = 0;
     let nextFlashAt = -1;
 
     function triggerFlash(): void {
       const rnd = Math.random();
-      if (rnd < 0.30) {
-        flashBri   = 0.55 + Math.random() * 0.45;
-        flashDecay = 2.0  + Math.random() * 2.0;
+      if (rnd < 0.3) {
+        flashBri = 0.55 + Math.random() * 0.45;
+        flashDecay = 2.0 + Math.random() * 2.0;
       } else if (rnd < 0.65) {
-        flashBri   = 0.70 + Math.random() * 0.30;
-        flashDecay = 5.0  + Math.random() * 5.0;
+        flashBri = 0.7 + Math.random() * 0.3;
+        flashDecay = 5.0 + Math.random() * 5.0;
       } else {
-        flashBri   = 0.80 + Math.random() * 0.20;
+        flashBri = 0.8 + Math.random() * 0.2;
         flashDecay = 12.0 + Math.random() * 10.0;
       }
       if (Math.random() < 0.35) {
         const echoBri = flashBri * (0.3 + Math.random() * 0.4);
-        setTimeout(() => {
-          if (stormValue < 0.1) return;
-          flashBri   = echoBri;
-          flashDecay = flashDecay * 1.3;
-        }, 80 + Math.random() * 200);
+        setTimeout(
+          () => {
+            if (stormValue < 0.1) return;
+            flashBri = echoBri;
+            flashDecay = flashDecay * 1.3;
+          },
+          80 + Math.random() * 200
+        );
       }
     }
 
     gl.uniform1f(uStorm, stormValue);
-    gl.uniform1f(uSnow,  snowValue);
+    gl.uniform1f(uSnow, snowValue);
     gl.uniform1f(uFlash, 0);
     document.addEventListener('weather:change', (e: Event) => {
       const mode = (e as CustomEvent<{ mode: string }>).detail.mode;
       stormTarget = mode === 'storm' ? 1.0 : 0.0;
-      snowTarget  = mode === 'snow'  ? 1.0 : 0.0;
+      snowTarget = mode === 'snow' ? 1.0 : 0.0;
     });
 
     gl.enable(gl.BLEND);
@@ -186,7 +193,7 @@
     gl.clearColor(0, 0, 0, 0);
 
     function resize(): void {
-      canvas!.width  = Math.floor(window.innerWidth  / 2);
+      canvas!.width = Math.floor(window.innerWidth / 2);
       canvas!.height = Math.floor(window.innerHeight / 2);
       gl!.viewport(0, 0, canvas!.width, canvas!.height);
       gl!.uniform2f(uRes, canvas!.width, canvas!.height);
@@ -204,7 +211,9 @@
       lastTs = now;
 
       stormValue += (stormTarget - stormValue) * 0.02;
-      snowValue  += (snowTarget  - snowValue)  * 0.02;
+      snowValue += (snowTarget - snowValue) * 0.02;
+
+      if (!canvas) return;
 
       const aspect = canvas.width / canvas.height;
       // Snow keeps clouds slow; only storm multiplies speed
@@ -213,8 +222,7 @@
 
       // Flash scheduling — storm only
       if (stormValue > 0.5) {
-        if (nextFlashAt < 0)
-          nextFlashAt = now + (5 + Math.random() * 15) * 1000;
+        if (nextFlashAt < 0) nextFlashAt = now + (5 + Math.random() * 15) * 1000;
         else if (now >= nextFlashAt) {
           triggerFlash();
           nextFlashAt = now + (5 + Math.random() * 15) * 1000;
@@ -224,9 +232,9 @@
       }
       if (flashBri > 0) flashBri = Math.max(0, flashBri - flashDecay * dt);
 
-      gl!.uniform1f(uStorm,  stormValue);
-      gl!.uniform1f(uSnow,   snowValue);
-      gl!.uniform1f(uFlash,  flashBri * Math.min(stormValue, 1));
+      gl!.uniform1f(uStorm, stormValue);
+      gl!.uniform1f(uSnow, snowValue);
+      gl!.uniform1f(uFlash, flashBri * Math.min(stormValue, 1));
       gl!.uniform1f(uCloudX, cloudX);
       gl!.uniform1f(uCloudZ, cloudZ);
       gl!.clear(gl!.COLOR_BUFFER_BIT);
@@ -255,7 +263,8 @@
     startDraw();
   }
 
-  const scheduleInit = (window as any).requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 200));
+  const scheduleInit =
+    (window as any).requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 200));
   scheduleInit(init);
 </script>
 

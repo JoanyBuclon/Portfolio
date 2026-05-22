@@ -2,10 +2,13 @@
 import Layout from '../layouts/Layout.astro';
 ---
 
-<Layout title='Joany Buclon' description="Hi, I'm Joany Buclon, a french Novelist and Software Engineer. Welcome to my portfolio.">
-  <div class='flex flex-col gap-4 p-6 md:p-10 overflow-visible'>
-    <h1 class='text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-display'>Joany Buclon</h1>
-    <h2 class='text-xl md:text-2xl'>Novelist & Software Engineer</h2>
+<Layout
+  title="Joany Buclon"
+  description="Hi, I'm Joany Buclon, a french Novelist and Software Engineer. Welcome to my portfolio."
+>
+  <div class="flex flex-col gap-4 p-6 md:p-10 overflow-visible">
+    <h1 class="text-6xl sm:text-7xl md:text-8xl lg:text-9xl font-display">Joany Buclon</h1>
+    <h2 class="text-xl md:text-2xl">Novelist & Software Engineer</h2>
   </div>
 </Layout>
 
@@ -19,13 +22,15 @@ import Layout from '../layouts/Layout.astro';
     h1.addEventListener('pointerdown', () => {
       clearTimeout(t);
       n++;
-      t = setTimeout(() => { n = 0; }, 400);
+      t = setTimeout(() => {
+        n = 0;
+      }, 400);
       if (n >= 5) {
         n = 0;
         const current = ((window as any).__weather as string) || 'off';
         const isDecember = new Date().getMonth() === 11;
         const snowChance = isDecember ? 0.9 : 0.1;
-        const newMode = current !== 'off' ? 'off' : (Math.random() < snowChance ? 'snow' : 'storm');
+        const newMode = current !== 'off' ? 'off' : Math.random() < snowChance ? 'snow' : 'storm';
         (window as any).__weather = newMode;
         if (newMode === 'off') {
           localStorage.removeItem('weather');
@@ -33,7 +38,7 @@ import Layout from '../layouts/Layout.astro';
           localStorage.setItem('weather', newMode);
         }
         document.documentElement.classList.toggle('storm', newMode === 'storm');
-        document.documentElement.classList.toggle('snow',  newMode === 'snow');
+        document.documentElement.classList.toggle('snow', newMode === 'snow');
         setTimeout(() => {
           document.dispatchEvent(new CustomEvent('weather:change', { detail: { mode: newMode } }));
         }, 0);

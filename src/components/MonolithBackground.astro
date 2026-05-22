@@ -1,4 +1,4 @@
-<canvas id='monolith-bg' aria-hidden='true'></canvas>
+<canvas id="monolith-bg" aria-hidden="true"></canvas>
 
 <script>
   let initialized = false;
@@ -170,7 +170,11 @@
 
     const buf = gl.createBuffer();
     gl.bindBuffer(gl.ARRAY_BUFFER, buf);
-    gl.bufferData(gl.ARRAY_BUFFER, new Float32Array([-1,-1, 1,-1, -1,1, -1,1, 1,-1, 1,1]), gl.STATIC_DRAW);
+    gl.bufferData(
+      gl.ARRAY_BUFFER,
+      new Float32Array([-1, -1, 1, -1, -1, 1, -1, 1, 1, -1, 1, 1]),
+      gl.STATIC_DRAW
+    );
 
     const aPos = gl.getAttribLocation(program, 'a_position');
     gl.enableVertexAttribArray(aPos);
@@ -178,7 +182,7 @@
 
     const uTime = gl.getUniformLocation(program, 'u_time');
     const uStorm = gl.getUniformLocation(program, 'u_storm');
-    const uRes  = gl.getUniformLocation(program, 'u_resolution');
+    const uRes = gl.getUniformLocation(program, 'u_resolution');
 
     let stormTarget = (window as any).__storm ? 1.0 : 0.0;
     let stormValue = stormTarget;
@@ -193,7 +197,7 @@
 
     function resize(): void {
       const dpr = Math.min(window.devicePixelRatio || 1, 2);
-      canvas!.width  = window.innerWidth  * dpr;
+      canvas!.width = window.innerWidth * dpr;
       canvas!.height = window.innerHeight * dpr;
       gl!.viewport(0, 0, canvas!.width, canvas!.height);
       gl!.uniform2f(uRes, canvas!.width, canvas!.height);
@@ -234,7 +238,8 @@
     startDraw();
   }
 
-  const scheduleInit = (window as any).requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 200));
+  const scheduleInit =
+    (window as any).requestIdleCallback ?? ((cb: () => void) => setTimeout(cb, 200));
   scheduleInit(init);
 </script>
 

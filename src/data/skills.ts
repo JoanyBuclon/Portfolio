@@ -22,11 +22,28 @@ export const pillars: Pillar[] = [
       },
       {
         title: 'Frontend Development',
-        skills: ['js', 'css', 'html', 'angular', 'typescript', 'svelte', 'nuxt', 'astro', 'websockets'],
+        skills: [
+          'js',
+          'css',
+          'html',
+          'angular',
+          'typescript',
+          'svelte',
+          'nuxt',
+          'astro',
+          'websockets',
+        ],
       },
       {
         title: 'Game Development',
-        skills: ['c++', 'unreal engine', 'godot', 'shaders', 'procedural generation', 'behavior trees'],
+        skills: [
+          'c++',
+          'unreal engine',
+          'godot',
+          'shaders',
+          'procedural generation',
+          'behavior trees',
+        ],
       },
       {
         title: 'AI & Data',
@@ -40,11 +57,29 @@ export const pillars: Pillar[] = [
     cards: [
       {
         title: 'Architecture & Engineering',
-        skills: ['micro-services', 'mvc', 'solid', 'design patterns', 'domain-driven', 'cqrs', 'rest'],
+        skills: [
+          'micro-services',
+          'mvc',
+          'solid',
+          'design patterns',
+          'domain-driven',
+          'cqrs',
+          'rest',
+        ],
       },
       {
         title: 'Database & Streaming',
-        skills: ['mysql', 'sqlserver', 'elasticsearch', 'neo4j', 'oracle', 'mongo', 'rabbitmq', 'kafka', 'redis'],
+        skills: [
+          'mysql',
+          'sqlserver',
+          'elasticsearch',
+          'neo4j',
+          'oracle',
+          'mongo',
+          'rabbitmq',
+          'kafka',
+          'redis',
+        ],
       },
       {
         title: 'Cloud & Infrastructure',
@@ -60,7 +95,7 @@ export const pillars: Pillar[] = [
           'sentry',
         ],
       },
-            {
+      {
         title: 'Testing & Security',
         skills: ['xunit', 'playwright', 'oauth', 'tdd', 'secrets management', 'sonarqube'],
       },

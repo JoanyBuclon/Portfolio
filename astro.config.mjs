@@ -10,11 +10,11 @@ export default defineConfig({
   site: 'https://joanybuclon.com',
 
   vite: {
-    plugins: [tailwindcss()]
+    plugins: [tailwindcss()],
   },
 
   build: {
-    inlineStylesheets: 'always'
+    inlineStylesheets: 'always',
   },
 
   fonts: [
@@ -28,10 +28,10 @@ export default defineConfig({
           {
             weight: 800,
             style: 'italic',
-            src: ['./src/assets/fonts/MigraItalic-ExtraboldItalic.woff2']
-          }
-        ]
-      }
+            src: ['./src/assets/fonts/MigraItalic-ExtraboldItalic.woff2'],
+          },
+        ],
+      },
     },
     {
       provider: fontProviders.local(),
@@ -43,12 +43,12 @@ export default defineConfig({
           {
             weight: 400,
             style: 'normal',
-            src: ['./src/assets/fonts/PPNeueMontreal-Regular.woff2']
+            src: ['./src/assets/fonts/PPNeueMontreal-Regular.woff2'],
           },
-        ]
-      }
-    }
+        ],
+      },
+    },
   ],
 
-  integrations: [sitemap()]
+  integrations: [sitemap()],
 });
