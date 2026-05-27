@@ -1,5 +1,5 @@
 # Stage 1 — build
-FROM node:22-alpine AS builder
+FROM node:24-alpine AS builder
 RUN corepack enable
 RUN apk add --no-cache python3 py3-pip && \
     pip3 install fonttools brotli --break-system-packages
