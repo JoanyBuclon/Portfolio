@@ -1,6 +1,15 @@
 allowBuilds:
   esbuild: true
   sharp: true
+minimumReleaseAgeExclude:
+  - esbuild@0.28.1
+  - vite@7.3.5
+  - astro@6.4.6
+  - js-yaml@4.1.2
 overrides:
+  astro@<6.4.6: ^6.4.6
   devalue@>=5.6.3 <=5.8.0: '>=5.8.1'
+  esbuild@>=0.27.3 <0.28.1: ^0.28.1
+  js-yaml@>=4.0.0 <=4.1.1: ^4.1.2
+  vite@>=7.0.0 <=7.3.4: ^7.3.5
   yaml@>=2.0.0 <2.8.3: '>=2.8.3'
