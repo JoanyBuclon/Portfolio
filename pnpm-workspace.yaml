@@ -4,7 +4,7 @@ allowBuilds:
 minimumReleaseAgeExclude:
   - esbuild@0.28.1
   - vite@7.3.5
-  - astro@6.4.6
+  - astro@6.4.6 || 7.3.1
   - js-yaml@4.1.2
 overrides:
   astro@<6.4.6: ^6.4.6
