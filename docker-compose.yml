@@ -15,6 +15,13 @@ services:
       - "traefik.http.middlewares.portfolioastroheader.headers.referrerPolicy=strict-origin-when-cross-origin"
       - "traefik.http.middlewares.portfolioastrocompress.compress=true"
       - "traefik.http.routers.portfolioastro.middlewares=portfolioastroheader,portfolioastrocompress,crowdsec"
+    read_only: true
+    tmpfs:
+      - /var/cache/nginx
+      - /run
+      - /tmp
+    security_opt:
+      - no-new-privileges:true
     restart: unless-stopped
 
 networks:
